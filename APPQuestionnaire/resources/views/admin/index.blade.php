@@ -6,7 +6,7 @@
 
         <!-- Bouton Ajouter un test -->
         <div class="d-flex justify-content-end mb-4">
-            <a href="{{ route('tests.create') }}" class="btn btn-primary">Ajouter un test</a>
+            <a href="{{ route('reponquition.create') }}" class="btn btn-primary">Ajouter un test</a>
         </div>
 
         <div class="row">
@@ -25,9 +25,9 @@
                             </p>
                             <!-- Boutons pour chaque test -->
                             <div class="d-flex justify-content-between mt-3">
-                                <a href="{{ route('tests.edit', $test->id_test) }}" class="btn btn-warning btn-sm" onclick="event.stopPropagation()">Modifier</a>
+                                <a href="{{ route('reponquition.edit', $test->id_test) }}" class="btn btn-warning btn-sm" onclick="event.stopPropagation()">Modifier</a>
                                 <a href="{{ route('questions.index', $test->id_test) }}" class="btn btn-info btn-sm" onclick="event.stopPropagation()">Gérer les questions</a>
-                                <form action="{{ route('tests.destroy', $test->id_test) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce test ?')" style="display:inline;">
+                                <form action="{{ route('reponquition.destroy', $test->id_test) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce test ?')" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="event.stopPropagation()">Supprimer</button>

@@ -1,3 +1,12 @@
+<?php
+// Démarre la session
+session_start();
+echo $_SESSION['userA'] ;
+// Vérifie si l'utilisateur est connecté en vérifiant la session
+
+
+?>
+
 @extends('layouts.app')
 
 @section('content')
