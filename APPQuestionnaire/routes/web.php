@@ -49,3 +49,7 @@ Route::post('/{test}/questions', [QuestionController::class, 'store'])->name('qu
 Route::get('/{test}/questions/{question}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
 Route::put('/{test}/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
 Route::delete('/{test}/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+
+use App\Http\Controllers\QuestionCourteController;
+Route::resource('questions/{question}/courtes', QuestionCourteController::class);
+Route::resource('tests/{test}/questions', QuestionController::class);
