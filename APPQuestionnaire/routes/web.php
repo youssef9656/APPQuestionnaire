@@ -37,3 +37,15 @@ Route::post('/users/store', [UserController::class, 'store'])->name('users.store
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
+use App\Http\Controllers\TestController;
+
+Route::resource('tests', TestController::class);
+
+use App\Http\Controllers\QuestionController;
+
+Route::get('/{test}/questions', [QuestionController::class, 'index'])->name('questions.index');
+Route::get('/{test}/questions/create', [QuestionController::class, 'create'])->name('questions.create');
+Route::post('/{test}/questions', [QuestionController::class, 'store'])->name('questions.store');
+Route::get('/{test}/questions/{question}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
+Route::put('/{test}/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
+Route::delete('/{test}/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
