@@ -14,6 +14,9 @@ class QuestionController extends Controller
     public function index(Test $test)
     {
         $questions = $test->questions()->with('subQuestions')->get();
+        $questions = $test->questions()
+            ->with(['subQuestions', 'options.associatedQuestion'])
+            ->get();
 
         return view('questions.index', compact('test', 'questions'));
     }

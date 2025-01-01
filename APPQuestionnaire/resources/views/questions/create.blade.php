@@ -1,5 +1,3 @@
-
-
 @extends('layout')
 
 @section('content')
@@ -47,7 +45,7 @@
                 <div id="choices_container" class="row g-3">
                     <!-- Les choix seront ajoutés ici -->
                 </div>
-                <button type="button" class="btn btn-outline-primary mt-3" onclick="addChoice()">Ajouter une option</button>
+                <button type="button" class="btn btn-outline-primary mt-3" onclick="addChoice()" id="add_choice_button" style="display:none;">Ajouter une option</button>
                 <button type="button" class="btn btn-outline-warning mt-3 ms-2" onclick="addMandatoryField()">Ajouter un champ obligatoire</button>
             </div>
 
@@ -75,6 +73,7 @@
             }
 
             optionsContainer.style.display = (type === "true_false") ? "block" : "none";
+            toggleChoicesForm();
         }
 
         // Ajouter une sous-question pour les questions courtes
@@ -167,6 +166,23 @@
         // Supprimer un champ obligatoire
         function removeMandatoryField(button) {
             button.closest('.col-md-6').remove();
+        }
+
+        // Afficher ou masquer le bouton "Ajouter une option" selon le type d'option
+        function toggleChoicesForm() {
+            var optionType = document.getElementById("option_type").value;
+            var addChoiceButton = document.getElementById("add_choice_button");
+            addChoiceButton.style.display = (optionType === "unique") ? "inline-block" : "none";
+            if(optionType === "unique") {
+                document.querySelectorAll('#choices_container .col-md-6').forEach(function(a) {
+                    a.remove();
+                });
+                addChoice();
+            } else {
+                document.querySelectorAll('#choices_container .col-md-6').forEach(function(a) {
+                    a.remove();
+                });
+            }
         }
     </script>
 @endsection

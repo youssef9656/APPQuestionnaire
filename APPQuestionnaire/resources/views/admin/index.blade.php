@@ -94,5 +94,11 @@
         .btn-sm {
             font-size: 0.9rem;
         }
+        button:hover{
+            transform: scale(1.03);
+        }
+        a:hover{
+            transform: scale(1.03);
+        }
     </style>
 @endsection
