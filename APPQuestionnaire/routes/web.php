@@ -64,6 +64,7 @@ Route::resource('reponquition/{test}/questions', QuestionController::class);
 use App\Http\Controllers\ReponseController;
 
 Route::get('/reponquition', [ReponseController::class, 'index'])->name('reponquition.index');
+Route::get('/tests', [TestController::class, 'index'])->name('tests.index');
 
 
 Route::get('reponse/{id}', [ReponseController::class, 'showReponse'])->name('questionsrepose');
