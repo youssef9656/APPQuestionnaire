@@ -53,3 +53,18 @@ Route::delete('/{test}/questions/{question}', [QuestionController::class, 'destr
 use App\Http\Controllers\QuestionCourteController;
 Route::resource('questions/{question}/courtes', QuestionCourteController::class);
 Route::resource('tests/{test}/questions', QuestionController::class);
+
+use App\Http\Controllers\OptionController;
+
+Route::get('questions/{id_question}/options/create', [OptionController::class, 'create'])->name('options.create');
+Route::post('questions/{id_question}/options', [OptionController::class, 'store'])->name('options.store');
+
+// Gestion des options pour une question
+Route::prefix('questions/{question}/options')->group(function () {
+    Route::get('/', [OptionController::class, 'index'])->name('options.index'); // Lister les options d'une question
+    Route::get('/create', [OptionController::class, 'create'])->name('options.create'); // Formulaire pour ajouter une option
+    Route::post('/', [OptionController::class, 'store'])->name('options.store'); // Enregistrer une option
+    Route::get('/{option}/edit', [OptionController::class, 'edit'])->name('options.edit'); // Modifier une option
+    Route::put('/{option}', [OptionController::class, 'update'])->name('options.update'); // Mettre à jour une option
+    Route::delete('/{option}', [OptionController::class, 'destroy'])->name('options.destroy'); // Supprimer une option
+});
