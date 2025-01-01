@@ -1,3 +1,6 @@
+
+
+
 @extends('layouts.app')
 
 @section('content')
@@ -14,6 +17,7 @@
                             <span class="badge bg-secondary float-end">{{ ucfirst($question->type_question) }}</span>
                         </div>
                         <div class="card-body">
+                            {{-- Sous-questions --}}
                             @if ($question->subQuestions && $question->subQuestions->count() > 0)
                                 <h5 class="card-title">Sous-questions :</h5>
                                 <ul class="list-group list-group-flush">
@@ -28,6 +32,30 @@
                                 <p class="text-muted">Aucune sous-question pour cette question.</p>
                             @endif
 
+                            {{-- Options --}}
+                            @if ($question->options && $question->options->count() > 0)
+                                <h5 class="card-title mt-3">Options :</h5>
+                                <ul class="list-group list-group-flush">
+                                    @foreach ($question->options as $option)
+                                        <li class="list-group-item">
+                                            <strong>Option :</strong> {{ $option->text_option }} <br>
+                                            <span class="badge bg-success">Ordre : {{ $option->ordre_question }}</span>
+
+                                            @if ($option->associatedQuestion)
+                                                <div class="mt-2">
+                                                    <strong>Question associée :</strong> {{ $option->associatedQuestion->text_question }}
+                                                </div>
+                                            @else
+                                                <div class="mt-2 text-muted">
+                                                    Aucune question associée.
+                                                </div>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-muted mt-3">Aucune option disponible pour cette question.</p>
+                            @endif
                         </div>
                         <div class="card-footer">
                             <a href="{{ route('questions.edit', [$test->id_test, $question->id_question]) }}" class="btn btn-warning btn-sm">Modifier</a>

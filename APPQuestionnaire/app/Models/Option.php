@@ -30,4 +30,10 @@ class Option extends Model
     {
         return $this->belongsTo(Question::class, 'id_question', 'id_question');
     }
+    public function associatedQuestion()
+    {
+        return $this->belongsTo(Question::class, 'text_associé', 'text_question');
+    }
+
+
 }

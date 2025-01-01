@@ -8,7 +8,7 @@ use App\Models\Test;
 use App\Models\Question;
 use App\Models\Option;
 
-class QuestionController extends Controller
+class OptionController extends Controller
 {
     public function store(Request $request, $testId)
     {
