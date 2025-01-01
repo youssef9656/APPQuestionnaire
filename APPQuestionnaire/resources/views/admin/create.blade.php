@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mt-5">
         <h1 class="mb-4 text-center">Ajouter un test</h1>
-        <form action="{{ route('tests.store') }}" method="POST" class="shadow p-4 rounded bg-light">
+        <form action="{{ route('reponquition.store') }}" method="POST" class="shadow p-4 rounded bg-light">
             @csrf
 
             <!-- Nom du test -->
@@ -27,7 +27,7 @@
             <!-- Boutons -->
             <div class="d-flex justify-content-between">
                 <button type="submit" class="btn btn-success">Ajouter</button>
-                <a href="{{ route('tests.index') }}" class="btn btn-secondary">Annuler</a>
+                <a href="{{ route('reponquition.index') }}" class="btn btn-secondary">Annuler</a>
             </div>
         </form>
     </div>

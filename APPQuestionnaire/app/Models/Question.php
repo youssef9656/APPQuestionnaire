@@ -18,13 +18,26 @@ class Question extends Model
         return $this->belongsTo(Test::class);
     }
 
-    public function questionCourtes()
-    {
-        return $this->hasMany(QuestionCourte::class, 'id_question');
-    }
+
 
     public function subQuestions()
     {
         return $this->hasMany(QuestionCourte::class, 'id_question', 'id_question');
     }
+    public function options()
+    {
+        return $this->hasMany(Option::class, 'id_question', 'id_question');
+    }
+
+
+    public function multiple()
+    {
+        return $this->hasMany(Multiple::class, 'id_question', 'id_question');
+    }
+    public function OptionChoixObligatoire()
+    {
+        return $this->hasMany(OptionChoixObligatoire::class, 'id_question', 'id_question');
+    }
+
+
 }

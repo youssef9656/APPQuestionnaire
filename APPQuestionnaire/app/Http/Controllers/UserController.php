@@ -34,20 +34,69 @@ class UserController extends Controller
         ]);
 
         // Recherche de l'utilisateur par matricule
-        $user = User::where('matricule', $request->matricule)->first(); // Utilisation de where()
+        $user = User::where('matricule', $request->matricule)->first();
 
         // Vérification de l'existence de l'utilisateur et du mot de passe
         if ($user && Hash::check($request->password, $user->password)) {
-            // Authentifier l'utilisateur
-            Auth::login($user);
+            // Authentifier l'utilisateur avec ou sans "remember me"
+            $remember = $request->has('remember');  // Vérifie si "remember me" est coché
+            Auth::login($user, $remember);
+            session(['user' => $user]); // Stocke l'objet utilisateur dans la session
 
-            // Rediriger vers la page d'accueil ou dashboard
-            return redirect()->route('home')->with('success', 'Connexion réussie');
+            $role = session('user')->role;
+
+            session_start();
+            $_SESSION['userA'] = $user;
+
+            if($role ===  'admin'){
+
+                 dd();
+            }else if($role === 'user'){
+                return redirect()->route('reponquition.index')->with('success', 'Connexion réussie')->with('user', Auth::user());
+            }else{
+                return back()->withErrors(['matricule' => 'Matricule ou mot de passe incorrect.']);
+            }
+
         } else {
             // Retourner une erreur si les informations sont incorrectes
             return back()->withErrors(['matricule' => 'Matricule ou mot de passe incorrect.']);
         }
     }
+
+//    public function login(Request $request)
+//    {
+//        // Validation des données
+//        $validatedData = $request->validate([
+//            'matricule' => 'required|string',
+//            'password' => 'required|string',
+//        ]);
+//
+//        // Recherche de l'utilisateur par matricule
+//        $user = User::where('matricule', $request->matricule)->first(); // Utilisation de where()
+//
+//        // Vérification de l'existence de l'utilisateur et du mot de passe
+//        if ($user && Hash::check($request->password, $user->password)) {
+//            // Authentifier l'utilisateur
+//// Authentifier l'utilisateur avec ou sans "remember me"
+//            Auth::login($user, $request);
+//            dd( Auth::login($user));
+//
+//            Auth::login($user);
+//            session_start();
+//            $_SESSION['userA'] ='fhjdfhj';
+//            if($user){
+//
+//            }else{
+//                return redirect()->route('reponquition.index')->with('success', 'Connexion réussie')->with('user', Auth::user());
+//
+//            }
+//
+//            // Rediriger vers la page d'accueil ou dashboard
+//        } else {
+//            // Retourner une erreur si les informations sont incorrectes
+//            return back()->withErrors(['matricule' => 'Matricule ou mot de passe incorrect.']);
+//        }
+//    }
 
     /**
      * Déconnecte l'utilisateur.

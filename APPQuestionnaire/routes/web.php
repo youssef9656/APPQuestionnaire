@@ -39,7 +39,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 use App\Http\Controllers\TestController;
 
-Route::resource('tests', TestController::class);
+Route::resource('reponquition', TestController::class);
 
 use App\Http\Controllers\QuestionController;
 
@@ -52,7 +52,21 @@ Route::delete('/{test}/questions/{question}', [QuestionController::class, 'destr
 
 use App\Http\Controllers\QuestionCourteController;
 Route::resource('questions/{question}/courtes', QuestionCourteController::class);
-Route::resource('tests/{test}/questions', QuestionController::class);
+Route::resource('reponquition/{test}/questions', QuestionController::class);
+
+
+
+
+
+
+
+
+use App\Http\Controllers\ReponseController;
+
+Route::get('/reponquition', [ReponseController::class, 'index'])->name('reponquition.index');
+
+
+Route::get('reponse/{id}', [ReponseController::class, 'showReponse'])->name('questionsrepose');
 
 use App\Http\Controllers\OptionController;
 

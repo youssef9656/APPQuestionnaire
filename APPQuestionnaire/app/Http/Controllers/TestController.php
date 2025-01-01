@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
-    // Afficher la liste des tests
+    // Afficher la liste des reponquition
     public function index()
     {
         $tests = Test::all();
@@ -34,7 +34,7 @@ class TestController extends Controller
 
         Test::create($validatedData);
 
-        return redirect()->route('tests.index')->with('success', 'Test ajouté avec succès.');
+        return redirect()->route('reponquition.index')->with('success', 'Test ajouté avec succès.');
     }
 
     // Afficher un test spécifique (optionnel si pas nécessaire)
@@ -62,13 +62,13 @@ class TestController extends Controller
         $data['active'] = $request->has('active') ? 1 : 0;
         $test->update($data);
 
-        return redirect()->route('tests.index')->with('success', 'Test mis à jour avec succès.');
+        return redirect()->route('reponquition.index')->with('success', 'Test mis à jour avec succès.');
     }
 
     // Supprimer un test
     public function destroy(Test $test)
     {
         $test->delete();
-        return redirect()->route('tests.index')->with('success', 'Test supprimé avec succès.');
+        return redirect()->route('reponquition.index')->with('success', 'Test supprimé avec succès.');
     }
 }
