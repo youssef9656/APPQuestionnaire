@@ -1,6 +1,3 @@
-
-
-
 @extends('layouts.app')
 
 @section('content')
@@ -39,22 +36,17 @@
                                     @foreach ($question->options as $option)
                                         <li class="list-group-item">
                                             <strong>Option :</strong> {{ $option->text_option }} <br>
-                                            <span class="badge bg-success">Ordre : {{ $option->ordre_question }}</span>
-
-                                            @if ($option->associatedQuestion)
-                                                <div class="mt-2">
-                                                    <strong>Question associée :</strong> {{ $option->associatedQuestion->text_question }}
-                                                </div>
+                                            <strong>Ordre :</strong> {{ $option->ordre_question }} <br>
+                                            @if ($option->text_associé !== null)
+                                                <strong>Question associée :</strong> {{ $option->text_associé }} <br>
                                             @else
-                                                <div class="mt-2 text-muted">
-                                                    Aucune question associée.
-                                                </div>
+                                                <span class="text-muted">Aucune question associée.</span>
                                             @endif
                                         </li>
                                     @endforeach
                                 </ul>
                             @else
-                                <p class="text-muted mt-3">Aucune option disponible pour cette question.</p>
+                                <p class="text-muted">Aucune option pour cette question.</p>
                             @endif
                         </div>
                         <div class="card-footer">
