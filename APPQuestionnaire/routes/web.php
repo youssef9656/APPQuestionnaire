@@ -27,12 +27,13 @@ Route::post('login', [UserController::class, 'login']);
 Route::post('logout', [UserController::class, 'logout'])->name('logout');
 
 // Routes pour l'enregistrement des utilisateurs
-Route::get('register', [UserController::class, 'create'])->name('users.create');  // Afficher le formulaire
+Route::get('register', [UserController::class, 'create'])->name('register');  // Afficher le formulaire
 Route::post('register', [UserController::class, 'store']);  // Soumettre le formulaire pour créer un utilisateur
 
 // Routes pour la gestion des utilisateurs (ajouter un nouvel utilisateur)
 Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
 Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+Route::post('/update-temps-test', [UserController::class, 'updateTempsTest'])->name('updateTempsTest');
 
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');

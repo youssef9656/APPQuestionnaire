@@ -1,0 +1,160 @@
+/* Corps de la page */
+#bodyQui {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Animation de transition douce */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Titre principal */
+h1 {
+    color: #0d6efd;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+h1:hover {
+    transform: scale(1.05);
+}
+
+/* Bouton de validation */
+.btn-validate {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    background: linear-gradient(135deg, #0d6efd, #5a8efc);
+    border: none;
+    border-radius: 30px;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-validate:hover {
+    background: linear-gradient(135deg, #084298, #4576e7);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Section question */
+.question {
+    margin-bottom: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Options obligatoires */
+.mandatory-options {
+    padding-left: 20px;
+    border-left: 4px solid #0d6efd;
+}
+
+/* Conteneur de formulaire */
+.form-container1 {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 90%;
+    max-width: 600px;
+    transition: transform 0.3s ease;
+}
+
+.form-container1:hover {
+    transform: scale(1.02);
+}
+
+/* Conteneur de progression circulaire */
+
+.progress-container {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    margin: 20px;
+}
+
+.circular-progress {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    background: conic-gradient(#0d6efd 0% 75%, #e0e0e0 75% 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.circular-progress:hover {
+    transform: rotate(360deg);
+}
+
+.progress-text {
+    position: absolute;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+}
+
+/* Timer */
+#timer {
+    font-family: 'Arial', sans-serif;
+    font-size: 20px;
+    color: #ff0000;
+    font-weight: bold;
+    /*background: linear-gradient(135deg, #4CAF50, #81C784);*/
+    text-align: center;
+    width: 180px;
+    height: 60px;
+    /*line-height: 60px;*/
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+
+
+#time-display {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Effets pour pause et fin */
+#timer.paused #time-display {
+    color: #9E9E9E;
+    animation: none;
+}
+
+#timer.finished #time-display {
+    color: #F44336;
+    font-style: italic;
+}
+#div_circle_temp{
+    width: 100%;
+    display: flex;
+    flex-flow:row nowrap ;
+
+    justify-content: space-between;
+
+}

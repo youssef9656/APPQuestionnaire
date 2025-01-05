@@ -28,6 +28,8 @@ class User extends Authenticatable
         'annees_exp_formateur',
         'formations_certifications',
         'password',
+        'tempsTest',
+        'role'
     ];
 
     /**

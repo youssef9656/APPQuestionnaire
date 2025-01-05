@@ -106,6 +106,9 @@ class UserController extends Controller
     public function logout()
     {
         Auth::logout();
+        session_start(); // Démarre la session
+        unset($_SESSION['userA']); // Supprime la variable de session 'userA'
+
         return redirect()->route('login');
     }
 
@@ -161,9 +164,80 @@ class UserController extends Controller
             'annees_exp_formateur' => $validated['annees_exp_formateur'],
             'formations_certifications' => $validated['formations_certifications'],
             'password' => bcrypt($validated['password']), // Hachage du mot de passe confirmé
+            'role'=> 'user',
         ]);
 
         // Redirection avec message de succès
         return redirect()->route('users.create')->with('success', 'Utilisateur créé avec succès.');
     }
+
+    public function update(Request $request, User $user)
+    {
+        // Validation des données
+        $validated = $request->validate([
+            'matricule' => 'required|string|max:50|unique:users,matricule,' . $user->id,
+            'nom' => 'required|string|max:100',
+            'prenom' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'telephone' => 'required|string|max:15|regex:/^[0-9\-\+]{10,15}$/',
+            'password' => 'nullable|string|confirmed|min:8', // Le mot de passe peut être nul si non modifié
+            'poste_occupe' => 'nullable|string|max:100',
+            'annees_exp_habillement' => 'nullable|integer',
+            'annees_exp_formateur' => 'nullable|integer',
+            'formations_certifications' => 'nullable|string|max:255',
+        ], [
+            'matricule.required' => 'Le matricule est obligatoire.',
+            'matricule.unique' => 'Ce matricule est déjà utilisé.',
+            'email.required' => 'L\'adresse email est obligatoire.',
+            'email.unique' => 'Cet email est déjà utilisé.',
+            'password.confirmed' => 'Le mot de passe de confirmation ne correspond pas.',
+            'telephone.regex' => 'Le numéro de téléphone est invalide.',
+        ]);
+
+        // Mise à jour des données de l'utilisateur
+        $user->update([
+            'matricule' => $validated['matricule'],
+            'nom' => $validated['nom'],
+            'prenom' => $validated['prenom'],
+            'email' => $validated['email'],
+            'telephone' => $validated['telephone'],
+            'poste_occupe' => $validated['poste_occupe'],
+            'annees_exp_habillement' => $validated['annees_exp_habillement'],
+            'annees_exp_formateur' => $validated['annees_exp_formateur'],
+            'formations_certifications' => $validated['formations_certifications'],
+            'password' => $validated['password'] ? bcrypt($validated['password']) : $user->password, // Hachage si un nouveau mot de passe est fourni
+        ]);
+
+        // Redirection avec message de succès
+        return redirect()->route('users.edit', $user->id)->with('success', 'Utilisateur mis à jour avec succès.');
+    }
+
+
+    public function updateTempsTest(Request $request)
+    {
+
+       session_start();
+        // Get the user data from session
+        $user = $_SESSION['userA'];
+
+
+        // Check if the increment flag is passed
+        if ($request->increment) {
+            // Increment the 'tempsTest' value by 1
+            $user['tempsTest'] = $user['tempsTest'] + 1;
+        }
+
+        \DB::table('users')
+            ->where('id_user', $user['id_user'])
+            ->update(['tempsTest' => $user['tempsTest']]);
+        $user->update([
+            'tempsTest' => $user['tempsTest'],
+        ]);
+
+
+        // Store the updated value back in session
+
+
+    }
+
 }
