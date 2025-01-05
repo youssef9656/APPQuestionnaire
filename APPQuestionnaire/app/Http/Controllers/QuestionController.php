@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Multiple;
 use App\Models\Question;
 use App\Models\Test;
 use App\Models\QuestionCourte;
@@ -40,7 +41,7 @@ class QuestionController extends Controller
             'sub_questions.*.text' => 'nullable|string|max:255',
             'sub_questions.*.type' => 'required',
             'choices' => 'nullable|array',
-            'choices.*.label' => 'required_if:type_question,true_false|max:255',
+            'choices.*.label' => 'required_if:type_question,options_choix|max:255',
 
         ]);
 
@@ -67,20 +68,38 @@ class QuestionController extends Controller
             }
         }
 
-        // Si la question est de type 'multiple_choice' ou 'true_false', ajouter les options
-        if (in_array($request->input('type_question'), ['multiple_choice', 'true_false'])) {
-            $ordre_option = 1; // Initialiser l'ordre des options pour cette question
-            foreach ($request->input('choices') as $choice) {
-                $option = Option::create([
-                    'id_question' => $question->id_question,
-                    'text_option' => $choice['label'],
-                    'text_associé' => $choice['question'] ?? null,
-                    'ordre_question' => $ordre_option++,
-                ]);
+        // Si la question est de type 'multiple_choice' ou 'options_choix', ajouter les options
+        if (in_array($request->input('type_question'), ['multiple_choice', 'options_choix'])) {
+            if ($request->input('option_type') === 'unique') {
+                $ordre_option = 1; // Initialiser l'ordre des options pour cette question
+                foreach ($request->input('choices') as $choice) {
+                    $option = Option::create([
+                        'id_question' => $question->id_question,
+                        'text_option' => $choice['label'],
+                        'text_associé' => $choice['question'] ?? null,
+                        'ordre_question' => $ordre_option++,
+                    ]);
 
-                // Vérifier si l'option est obligatoire et ajouter à OptionChoixObligatoire
+                    // Vérifier si l'option est obligatoire et ajouter à OptionChoixObligatoire
 
+                }
+            }elseif ($request->input('option_type') === 'multiple'){
+//                dd($request);
+                $ordre_option = 1; // Initialiser l'ordre des options pour cette question
+                foreach ($request->input('choicesMultiple') as $choice) {
+                    $option = Multiple::create([
+                        'id_question' => $question->id_question,
+                        'text_question'=>  $choice['label'],
+                        'nombre_de'=> $choice['de'],
+                        'nombre_a'=> $choice['a'],
+                        'ordre_multip'=> $ordre_option++
+                    ]);
+
+                    // Vérifier si l'option est obligatoire et ajouter à OptionChoixObligatoire
+
+                }
             }
+
         }
 
         if ($request->has('mandatory')) {
@@ -110,7 +129,7 @@ class QuestionController extends Controller
         // Validation des données
         $request->validate([
             'text_question' => 'required|string|max:255', // Correctif du nom de la colonne
-            'type_question' => 'required|in:text,multiple_choice,true_false,short_question', // Types autorisés
+            'type_question' => 'required|in:text,multiple_choice,options_choix,short_question', // Types autorisés
             'sub_questions' => 'nullable|array',
             'sub_questions.*.text' => 'required|string|max:255',
             'sub_questions.*.type' => 'required|in:text,number',

@@ -24,6 +24,7 @@ class Multiple extends Model
         'text_question',
         'nombre_de',
         'nombre_a',
+        'ordre_multip'
     ];
 
     // Relation avec le modèle `Question`

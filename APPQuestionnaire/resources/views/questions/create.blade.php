@@ -18,7 +18,7 @@
                 <label for="type_question" class="form-label">Type de la question :</label>
                 <select name="type_question" id="type_question" class="form-select" required onchange="handleQuestionTypeChange()">
                     <option>Sélectionnez le type du question</option>
-                    <option value="true_false" {{ old('type_question') == 'true_false' ? 'selected' : '' }}>Options</option>
+                    <option value="options_choix" {{ old('type_question') == 'options_choix' ? 'selected' : '' }}>Options</option>
                     <option value="short_question" {{ old('type_question') == 'short_question' ? 'selected' : '' }}>Question courte</option>
                 </select>
             </div>
@@ -37,12 +37,15 @@
                 <h5 class="mb-3">Options :</h5>
                 <div class="mb-3">
                     <label for="option_type" class="form-label">Type d'options :</label>
-                    <select id="option_type" class="form-select" onchange="toggleChoicesForm()">
+                    <select id="option_type" name="option_type" class="form-select" onchange="toggleChoicesForm()">
                         <option value="unique">Choix unique</option>
                         <option value="multiple">Choix multiple</option>
                     </select>
                 </div>
                 <div id="choices_container" class="row g-3">
+                    <!-- Les choix seront ajoutés ici -->
+                </div>
+                <div id="choices_multiple_container" class="row g-3" style="margin-top: 0">
                     <!-- Les choix seront ajoutés ici -->
                 </div>
                 <button type="button" class="btn btn-outline-primary mt-3" onclick="addChoice()" id="add_choice_button" style="display:none;">Ajouter une option</button>
@@ -66,11 +69,11 @@
 
             // Affiche ou masque les conteneurs
             shortQuestionsContainer.style.display = (type === "short_question") ? "block" : "none";
-            optionsContainer.style.display = (type === "true_false") ? "block" : "none";
+            optionsContainer.style.display = (type === "options_choix") ? "block" : "none";
 
             // Désactiver ou activer les champs dans les conteneurs
             toggleContainerFields(shortQuestionsContainer, type === "short_question");
-            toggleContainerFields(optionsContainer, type === "true_false");
+            toggleContainerFields(optionsContainer, type === "options_choix");
 
             // Actions spécifiques pour chaque type
             if (type === "short_question") {
@@ -187,26 +190,27 @@
 
 
         function addMultipleChoice() {
-            var choicesContainer = document.getElementById("choices_container");
+            var choicesContainer = document.getElementById("choices_multiple_container");
             var index = choicesContainer.children.length;
 
             var newChoice = document.createElement("div");
             newChoice.classList.add("col-md-6");
 
+
             newChoice.innerHTML = `
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="mb-3">
-                            <label for="choices[${index}][label]" class="form-label">Libellé du choix :</label>
-                            <input type="text" name="choices[${index}][label]" id="choices[${index}][label]" class="form-control" >
+                            <label for="choicesMultiple[${index}][label]" class="form-label">Libellé du choix :</label>
+                            <input type="text" name="choicesMultiple[${index}][label]" id="choices[${index}][label]" class="form-control" >
                         </div>
                         <div class="mb-3">
-                            <label for="choices[${index}][de]" class="form-label">De : </label>
-                            <input type="number" name="choices[${index}][de]" id="choices[${index}][de]" class="form-control">
+                            <label for="choicesMultiple[${index}][de]" class="form-label">De : </label>
+                            <input type="number" name="choicesMultiple[${index}][de]" id="choices[${index}][de]" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label for="choices[${index}][a]" class="form-label">À :</label>
-                            <input type="number" name="choices[${index}][a]" id="choices[${index}][a]" class="form-control">
+                            <label for="choicesMultiple[${index}][a]" class="form-label">À :</label>
+                            <input type="number" name="choicesMultiple[${index}][a]" id="choices[${index}][a]" class="form-control">
                         </div>
                         <button type="button" class="btn btn-danger btn-sm" onclick="removeMultipleChoice(this)">Supprimer</button>
                     </div>
@@ -225,6 +229,7 @@
             var addChoiceButton = document.getElementById("add_choice_button");
             var addMultipleChoiceButton = document.getElementById("add_multiple_choice_button");
             var choicesContainer = document.getElementById("choices_container");
+            var choicesMultipleContainer = document.getElementById("choices_multiple_container");
 
             addChoiceButton.style.display = (optionType === "unique") ? "inline-block" : "none";
             addMultipleChoiceButton.style.display = (optionType === "multiple") ? "inline-block" : "none";
@@ -245,6 +250,14 @@
                 });
             } else if (choicesContainer.children.length === 0 && optionType === "unique") {
                 addChoice();
+            }
+
+            if (optionType !== "multiple") {
+                document.querySelectorAll('#choices_multiple_container .col-md-6').forEach(function (a) {
+                    a.remove();
+                });
+            } else if (choicesMultipleContainer.children.length === 0 && optionType === "multiple") {
+                addMultipleChoice();
             }
         }
 

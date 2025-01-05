@@ -59,7 +59,23 @@
                                     @endforeach
                                 </ul>
                             @else
-                                <p class="text-muted">Aucune option pour cette question.</p>
+
+                            @endif
+
+                            {{-- Options multiples --}}
+                            @if ($question->type_question === 'options_choix' && $question->multiple && $question->multiple->count() > 0)
+                                <h5 class="card-title mt-3">Options multiples :</h5>
+                                @foreach ($question->multiple as $multiple)
+                                    <div class="card mb-2">
+                                        <div class="card-header bg-info text-white">
+                                            <strong>Libellé :</strong> {{ $multiple->text_question }}
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>De :</strong> {{ $multiple->nombre_de }}</p>
+                                            <p><strong>À :</strong> {{ $multiple->nombre_a }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
                             @endif
                         </div>
                         <div class="card-footer">
