@@ -15,7 +15,7 @@ class Reponse extends Model
     public $timestamps = false; // Si vous n'utilisez pas les timestamps
 
     protected $fillable = [
-        'id_user', 'id_test', 'id_question', 'reponse', 'id_option_reponse', 'type_reponse',
+        'id_user', 'id_test', 'id_question', 'reponse', 'id_option_reponse', 'type_reponse','id_option_Ob'
     ];
 
     // Relation avec le modèle `User`

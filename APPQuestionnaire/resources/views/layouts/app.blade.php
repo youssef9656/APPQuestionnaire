@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Application</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         .logo-circle {
@@ -14,6 +16,8 @@
             object-fit: cover;
         }
     </style>
+    <livewire:styles />
+    <livewire:scripts />
 </head>
 <body>
 
@@ -32,26 +36,26 @@
             <!-- Liens de navigation -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-{{--                    {{session_start()}}--}}
-{{--                    {{$_SESSION['userA']}}--}}
-                    @if(!session_start())
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">Connexion</a>
-                        </li>
-                    @else
-                            <li class="nav-item">
-                            <span class="nav-link">
-                                Bienvenue, {{ $_SESSION['userA']['nom'] }} {{ $_SESSION['userA']['prenom'] }}
-                            </span>
-                            </li>
-                        <li class="nav-item">
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-danger">Déconnexion</button>
-                            </form>
-                        </li>
-                    @endif
-
+                    <?php
+                    session_start();
+                    if (isset($_SESSION['userA'])) {
+                        echo '<li class="nav-item">
+            <span class="nav-link">
+                Bienvenue, ' . $_SESSION['userA']['nom'] . ' ' . $_SESSION['userA']['prenom'] . '
+            </span>
+          </li>
+          <li class="nav-item">
+            <form id="logout-form" action="' . route('logout') . '" method="POST" class="d-inline">
+                <input type="hidden" name="_token" value="' . csrf_token() . '">
+                <button type="submit" class="btn btn-danger">Déconnexion</button>
+            </form>
+          </li>';
+                    } else {
+                        echo '<li class="nav-item">
+            <a class="nav-link" href="' . route('login') . '">Connexion</a>
+          </li>';
+                    }
+                    ?>
 
                 </ul>
             </div>

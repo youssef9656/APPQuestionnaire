@@ -34,11 +34,12 @@
                     <li class="nav-item">
                         <span class="nav-link">
                               Bienvenue,
-                            {{$_SESSION['userA']['nom'] }}
-                            {{$_SESSION['userA']['prenom'] }}
-
-
-
+                            <?php
+                                if($_SESSION['userA']){
+                                  echo  $_SESSION['userA']['nom'];
+                                  echo  $_SESSION['userA']['prenom'];
+                                }
+                            ?>
                         </span>
                     </li>
                     <li class="nav-item">

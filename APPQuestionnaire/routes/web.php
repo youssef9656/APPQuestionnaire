@@ -71,6 +71,8 @@ Route::get('reponse/{id}', [ReponseController::class, 'showReponse'])->name('que
 // Route pour soumettre les réponses à un test
 Route::post('/reponse/{id_test}/reponses', [ReponseController::class, 'store'])
     ->name('reponses.store');
+Route::get('/test/{id_test}/completion', [ReponseController::class, 'testCompletion'])->name('test.completion');
+
 
 
 use App\Http\Controllers\OptionController;
@@ -87,3 +89,10 @@ Route::prefix('questions/{question}/options')->group(function () {
     Route::put('/{option}', [OptionController::class, 'update'])->name('options.update'); // Mettre à jour une option
     Route::delete('/{option}', [OptionController::class, 'destroy'])->name('options.destroy'); // Supprimer une option
 });
+
+
+
+
+//use App\Http\Livewire\UsersTable;
+
+//Route::get('/users', UsersTable::class)->name('users.index');
