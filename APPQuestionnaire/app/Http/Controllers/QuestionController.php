@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Question;
 use App\Models\Test;
 use App\Models\QuestionCourte;
+use App\Models\OptionChoixObligatoire;
 use App\Models\Option;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,7 @@ class QuestionController extends Controller
     // Afficher les questions pour un test spécifique
     public function index(Test $test)
     {
-        $questions = $test->questions()->with('subQuestions')->get();
+//        $questions = $test->questions()->with('subQuestions')->get();
         $questions = $test->questions()
             ->with(['subQuestions', 'options.associatedQuestion'])
             ->get();
@@ -34,12 +35,13 @@ class QuestionController extends Controller
         // Validation des données spécifiques aux questions
         $request->validate([
             'text_question' => 'required|string|max:255',
-            'type_question' => 'required|in:text,multiple_choice,true_false,short_question', // ajout des types valides
-            'sub_questions' => 'nullable|array', // validation des sous-questions si présentes
+            'type_question' => 'required',
+            'sub_questions' => 'nullable|array',
             'sub_questions.*.text' => 'nullable|string|max:255',
-            'sub_questions.*.type' => 'required|in:text,number', // Validation du type des sous-questions
-            'choices' => 'nullable|array', // Validation des options si présentes
-            'choices.*.label' => 'required_if:type_question,multiple_choice,true_false|string|max:255', // Validation des labels des choix
+            'sub_questions.*.type' => 'required',
+            'choices' => 'nullable|array',
+            'choices.*.label' => 'required_if:type_question,true_false|max:255',
+
         ]);
 
         $ordre_question = $test->questions()->max('ordre_question') + 1;
@@ -69,11 +71,24 @@ class QuestionController extends Controller
         if (in_array($request->input('type_question'), ['multiple_choice', 'true_false'])) {
             $ordre_option = 1; // Initialiser l'ordre des options pour cette question
             foreach ($request->input('choices') as $choice) {
-                Option::create([
+                $option = Option::create([
                     'id_question' => $question->id_question,
                     'text_option' => $choice['label'],
-                    'text_associé' => $choice['question'],
+                    'text_associé' => $choice['question'] ?? null,
                     'ordre_question' => $ordre_option++,
+                ]);
+
+                // Vérifier si l'option est obligatoire et ajouter à OptionChoixObligatoire
+
+            }
+        }
+
+        if ($request->has('mandatory')) {
+            foreach ($request->input('mandatory') as $mandatoryField) {
+                OptionChoixObligatoire::create([
+                    'id_question' => $question->id_question,
+                    'question_text' => $mandatoryField['text'],
+                    'question_type' => 'text', // Si applicable, sinon ajuster selon la logique
                 ]);
             }
         }

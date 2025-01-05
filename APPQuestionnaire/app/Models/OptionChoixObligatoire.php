@@ -11,16 +11,15 @@ class OptionChoixObligatoire extends Model
 
     protected $table = 'options_choix_obligatoire';
 
-    protected $primaryKey = 'id_option_choix_obligatoire';
+    protected $primaryKey = 'id_option';
 
     protected $fillable = [
-        'id_option',
         'id_question',
         'question_text',
         'question_type',
     ];
 
-    public $timestamps = true;
+    public $timestamps = false;
 
     // Relation avec le modèle Option
     public function option()

@@ -39,6 +39,10 @@ class Question extends Model
         return $this->hasMany(OptionChoixObligatoire::class, 'id_question', 'id_question');
     }
 
+    public function mandatoryFields()
+    {
+        return $this->hasMany(OptionChoixObligatoire::class, 'id_question');
+    }
 
 
 

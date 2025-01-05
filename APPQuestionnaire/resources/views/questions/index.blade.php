@@ -14,9 +14,23 @@
                             <span class="badge bg-secondary float-end">{{ ucfirst($question->type_question) }}</span>
                         </div>
                         <div class="card-body">
+                            {{-- Questions obligatoires --}}
+                            @if ($question->mandatoryFields && $question->mandatoryFields->count() > 0)
+                                <h5 class="card-title">Champs obligatoires :</h5>
+                                <ul class="list-group list-group-flush">
+                                    @foreach ($question->mandatoryFields as $mandatoryField)
+                                        <li class="list-group-item">
+                                            {{ $mandatoryField->question_text }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-muted">Aucun champ obligatoire pour cette question.</p>
+                            @endif
+
                             {{-- Sous-questions --}}
                             @if ($question->subQuestions && $question->subQuestions->count() > 0)
-                                <h5 class="card-title">Sous-questions :</h5>
+                                <h5 class="card-title mt-3">Sous-questions :</h5>
                                 <ul class="list-group list-group-flush">
                                     @foreach ($question->subQuestions as $subQuestion)
                                         <li class="list-group-item">
@@ -26,7 +40,6 @@
                                     @endforeach
                                 </ul>
                             @else
-                                <p class="text-muted">Aucune sous-question pour cette question.</p>
                             @endif
 
                             {{-- Options --}}

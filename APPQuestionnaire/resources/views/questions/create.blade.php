@@ -17,7 +17,7 @@
             <div class="mb-3">
                 <label for="type_question" class="form-label">Type de la question :</label>
                 <select name="type_question" id="type_question" class="form-select" required onchange="handleQuestionTypeChange()">
-                    <option value="text" {{ old('type_question') == 'text' ? 'selected' : '' }}>Texte</option>
+                    <option>Sélectionnez le type du question</option>
                     <option value="true_false" {{ old('type_question') == 'true_false' ? 'selected' : '' }}>Options</option>
                     <option value="short_question" {{ old('type_question') == 'short_question' ? 'selected' : '' }}>Question courte</option>
                 </select>
@@ -46,6 +46,7 @@
                     <!-- Les choix seront ajoutés ici -->
                 </div>
                 <button type="button" class="btn btn-outline-primary mt-3" onclick="addChoice()" id="add_choice_button" style="display:none;">Ajouter une option</button>
+                <button type="button" class="btn btn-outline-primary mt-3" onclick="addMultipleChoice()" id="add_multiple_choice_button" style="display:none;">Ajouter une option</button>
                 <button type="button" class="btn btn-outline-warning mt-3 ms-2" onclick="addMandatoryField()">Ajouter un champ obligatoire</button>
             </div>
 
@@ -63,18 +64,32 @@
             var shortQuestionsContainer = document.getElementById("short_questions_container");
             var optionsContainer = document.getElementById("options_container");
 
+            // Affiche ou masque les conteneurs
             shortQuestionsContainer.style.display = (type === "short_question") ? "block" : "none";
+            optionsContainer.style.display = (type === "true_false") ? "block" : "none";
+
+            // Désactiver ou activer les champs dans les conteneurs
+            toggleContainerFields(shortQuestionsContainer, type === "short_question");
+            toggleContainerFields(optionsContainer, type === "true_false");
+
+            // Actions spécifiques pour chaque type
             if (type === "short_question") {
                 addShortQuestion();
             } else {
-                document.querySelectorAll('#short_questions .col-md-6').forEach(function(a) {
+                document.querySelectorAll('#short_questions .col-md-6').forEach(function (a) {
                     a.remove();
                 });
             }
-
-            optionsContainer.style.display = (type === "true_false") ? "block" : "none";
             toggleChoicesForm();
         }
+
+        function toggleContainerFields(container, enable) {
+            var inputs = container.querySelectorAll("input, select, textarea");
+            inputs.forEach(function (input) {
+                input.disabled = !enable;
+            });
+        }
+
 
         // Ajouter une sous-question pour les questions courtes
         function addShortQuestion() {
@@ -112,6 +127,7 @@
 
         // Ajouter un choix pour les options
         function addChoice() {
+
             var choicesContainer = document.getElementById("choices_container");
             var index = choicesContainer.children.length;
 
@@ -123,7 +139,7 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="choices[${index}][label]" class="form-label">Libellé du choix :</label>
-                            <input type="text" name="choices[${index}][label]" id="choices[${index}][label]" class="form-control" required>
+                            <input type="text" name="choices[${index}][label]" id="choices[${index}][label]" class="form-control" >
                         </div>
                         <div class="mb-3">
                             <label for="choices[${index}][question]" class="form-label">Question associée (facultatif) :</label>
@@ -168,21 +184,70 @@
             button.closest('.col-md-6').remove();
         }
 
+
+
+        function addMultipleChoice() {
+            var choicesContainer = document.getElementById("choices_container");
+            var index = choicesContainer.children.length;
+
+            var newChoice = document.createElement("div");
+            newChoice.classList.add("col-md-6");
+
+            newChoice.innerHTML = `
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="choices[${index}][label]" class="form-label">Libellé du choix :</label>
+                            <input type="text" name="choices[${index}][label]" id="choices[${index}][label]" class="form-control" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="choices[${index}][de]" class="form-label">De : </label>
+                            <input type="number" name="choices[${index}][de]" id="choices[${index}][de]" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="choices[${index}][a]" class="form-label">À :</label>
+                            <input type="number" name="choices[${index}][a]" id="choices[${index}][a]" class="form-control">
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeMultipleChoice(this)">Supprimer</button>
+                    </div>
+                </div>
+            `;
+            choicesContainer.appendChild(newChoice);
+        }
+        function removeMultipleChoice(button) {
+            button.closest('.col-md-6').remove();
+        }
+
+
         // Afficher ou masquer le bouton "Ajouter une option" selon le type d'option
         function toggleChoicesForm() {
             var optionType = document.getElementById("option_type").value;
             var addChoiceButton = document.getElementById("add_choice_button");
+            var addMultipleChoiceButton = document.getElementById("add_multiple_choice_button");
+            var choicesContainer = document.getElementById("choices_container");
+
             addChoiceButton.style.display = (optionType === "unique") ? "inline-block" : "none";
-            if(optionType === "unique") {
-                document.querySelectorAll('#choices_container .col-md-6').forEach(function(a) {
+            addMultipleChoiceButton.style.display = (optionType === "multiple") ? "inline-block" : "none";
+
+            var inputs = choicesContainer.querySelectorAll("input[name^='choices'][name$='[label]']");
+            inputs.forEach(function (input) {
+                if (optionType === "unique") {
+                    input.setAttribute("required", "required");
+                } else {
+                    input.removeAttribute("required");
+                }
+            });
+
+            // Nettoyer les options si non nécessaires
+            if (optionType !== "unique") {
+                document.querySelectorAll('#choices_container .col-md-6').forEach(function (a) {
                     a.remove();
                 });
+            } else if (choicesContainer.children.length === 0 && optionType === "unique") {
                 addChoice();
-            } else {
-                document.querySelectorAll('#choices_container .col-md-6').forEach(function(a) {
-                    a.remove();
-                });
             }
         }
+
+
     </script>
 @endsection
