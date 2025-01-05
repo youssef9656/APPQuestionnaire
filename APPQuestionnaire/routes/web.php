@@ -58,16 +58,19 @@ Route::resource('tests/{test}/questions', QuestionController::class);
 
 
 
+Route::get('/tests', [TestController::class, 'index'])->name('tests.index');
 
 
 
 use App\Http\Controllers\ReponseController;
 
 Route::get('/reponquition', [ReponseController::class, 'index'])->name('reponquition.index');
-Route::get('/tests', [TestController::class, 'index'])->name('tests.index');
-
 
 Route::get('reponse/{id}', [ReponseController::class, 'showReponse'])->name('questionsrepose');
+// Route pour soumettre les réponses à un test
+Route::post('/reponse/{id_test}/reponses', [ReponseController::class, 'store'])
+    ->name('reponses.store');
+
 
 use App\Http\Controllers\OptionController;
 
