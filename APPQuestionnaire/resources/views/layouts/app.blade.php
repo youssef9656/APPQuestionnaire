@@ -32,26 +32,26 @@
             <!-- Liens de navigation -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-{{--                    {{session_start()}}--}}
-{{--                    {{$_SESSION['userA']}}--}}
-                    @if(!session_start())
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">Connexion</a>
-                        </li>
-                    @else
-                            <li class="nav-item">
-                            <span class="nav-link">
-                                Bienvenue, {{ $_SESSION['userA']['nom'] }} {{ $_SESSION['userA']['prenom'] }}
-                            </span>
-                            </li>
-                        <li class="nav-item">
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-danger">Déconnexion</button>
-                            </form>
-                        </li>
-                    @endif
-
+                    <?php
+                    session_start();
+                    if (isset($_SESSION['userA'])) {
+                        echo '<li class="nav-item">
+            <span class="nav-link">
+                Bienvenue, ' . $_SESSION['userA']['nom'] . ' ' . $_SESSION['userA']['prenom'] . '
+            </span>
+          </li>
+          <li class="nav-item">
+            <form id="logout-form" action="' . route('logout') . '" method="POST" class="d-inline">
+                <input type="hidden" name="_token" value="' . csrf_token() . '">
+                <button type="submit" class="btn btn-danger">Déconnexion</button>
+            </form>
+          </li>';
+                    } else {
+                        echo '<li class="nav-item">
+            <a class="nav-link" href="' . route('login') . '">Connexion</a>
+          </li>';
+                    }
+                    ?>
 
                 </ul>
             </div>

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ReponseController extends Controller
 {
+
     public function index()
     {
         session_start();
