@@ -21,7 +21,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm w-100">
         <div class="container">
             <!-- Logo circulaire ou nom de l'application -->
-            <a class="navbar-brand d-flex align-items-center" href="{{ url('http://127.0.0.1:8000/tests') }}">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url('http://127.0.0.1:8000/reponse/6') }}">
                 <img src="{{ asset('Picture1.png') }}" alt="Logo" class="logo-circle me-2">
                 Mon Application
             </a>

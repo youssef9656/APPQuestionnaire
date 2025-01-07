@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('content')
     <div class="container mt-5">
@@ -61,6 +61,68 @@
     </div>
 
     <script>
+
+
+        function ValidateQuestion() {
+            let type = document.getElementById("type_question").value;
+            let sub_question_inputs = document.querySelectorAll('input[name^="sub_questions"][name$="[text]"]');
+            let choices = document.querySelectorAll('input[name^="choices"][name$="[label]"]');
+            let choicesMultiple = document.querySelectorAll('input[name^="choicesMultiple"][name$="[label]"]');
+            let mandatoryFields = document.querySelectorAll('input[name^="mandatory"][name$="[text]"]');
+
+            // Valider selon le type
+            switch (type) {
+                case "short_question":
+                    for (let input of sub_question_inputs) {
+                        if (input.value.trim() === "") {
+                            alert("Veuillez remplir tous les champs des sous-questions.");
+                            return false;
+                        }
+                    }
+                    break;
+
+                case "options_choix":
+                    // Vérifier qu'au moins une option existe
+                    if (choices.length === 0 && choicesMultiple.length === 0) {
+                        alert("Veuillez ajouter au moins une option.");
+                        return false;
+                    }
+
+                    // Vérifier que toutes les options sont remplies (choices)
+                    for (let choice of choices) {
+                        if (choice.value.trim() === "") {
+                            alert("Veuillez remplir tous les champs des options.");
+                            return false;
+                        }
+                    }
+
+                    // Vérifier que toutes les options sont remplies (choicesMultiple)
+                    for (let choice of choicesMultiple) {
+                        if (choice.value.trim() === "") {
+                            alert("Veuillez remplir tous les champs des options multiples.");
+                            return false;
+                        }
+                    }
+
+                    // Vérifier que tous les champs obligatoires sont remplis
+                    for (let mandatoryField of mandatoryFields) {
+                        if (mandatoryField.value.trim() === "") {
+                            alert("Veuillez remplir tous les champs obligatoires.");
+                            return false;
+                        }
+                    }
+                    break;
+
+                default:
+                    alert("Type de question invalide ou non sélectionné.");
+                    return false;
+            }
+
+            // Si toutes les validations passent
+            return true;
+        }
+
+
         // Afficher ou masquer les sous-questions et options selon le type de question
         function handleQuestionTypeChange() {
             var type = document.getElementById("type_question").value;
@@ -261,6 +323,17 @@
             }
         }
 
+
+        let questionForm = document.querySelector("form");
+        questionForm.addEventListener("submit", (event) => {
+            if (!ValidateQuestion()) {
+                event.preventDefault(); // Empêcher la soumission si validation échoue
+                console.log(34)
+            }else{
+                console.log("Question validée");
+                return true;
+            }
+        });
 
     </script>
 @endsection
