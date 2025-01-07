@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Application</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         .logo-circle {
@@ -16,8 +14,6 @@
             object-fit: cover;
         }
     </style>
-    <livewire:styles />
-    <livewire:scripts />
 </head>
 <body>
 
@@ -25,7 +21,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm w-100">
         <div class="container">
             <!-- Logo circulaire ou nom de l'application -->
-            <a class="navbar-brand d-flex align-items-center" href="{{ url('http://127.0.0.1:8000/tests') }}">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url('http://127.0.0.1:8000/reponse/6') }}">
                 <img src="{{ asset('Picture1.png') }}" alt="Logo" class="logo-circle me-2">
                 Mon Application
             </a>
