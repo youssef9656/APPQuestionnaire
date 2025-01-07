@@ -79,7 +79,7 @@
                             @endif
                         </div>
                         <div class="card-footer">
-                            <a href="{{ route('questions.edit', [$test->id_test, $question->id_question]) }}" class="btn btn-warning btn-sm">Modifier</a>
+{{--                            <a href="{{ route('questions.edit', [$test->id_test, $question->id_question]) }}" class="btn btn-warning btn-sm">Modifier</a>--}}
                             <form action="{{ route('questions.destroy', [$test->id_test, $question->id_question]) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
