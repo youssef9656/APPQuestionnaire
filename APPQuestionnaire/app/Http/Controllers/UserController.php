@@ -9,6 +9,24 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+ public function atho()
+    {
+        session_start() ;
+
+        $user = $_SESSION['userA'] ?? null;
+        if ($user !== null) {
+            if($user['role'] === 'admin') {
+
+            }elseif ($user['role'] === 'user') {
+                return redirect()->route('reponquition.index')->with('success', 'Connexion réussie')->with('user', Auth::user());
+
+            }else{
+                return view('errors.not_found', ['message' => 'Utilisateur non trouvé']);
+            }
+        }
+    }
+
+
     /**
      * Affiche la page de connexion.
      *
@@ -16,7 +34,8 @@ class UserController extends Controller
      */
     public function showLoginForm()
     {
-        return view('users.login');
+        return $this->atho() ?? view('users.login');
+
     }
 
     /**
@@ -52,7 +71,6 @@ class UserController extends Controller
 
             if($role ===  'admin'){
 
-                 dd();
             }else if($role === 'user'){
                 return redirect()->route('reponquition.index')->with('success', 'Connexion réussie')->with('user', Auth::user());
             }else{
@@ -65,40 +83,6 @@ class UserController extends Controller
         }
     }
 
-//    public function login(Request $request)
-//    {
-//        // Validation des données
-//        $validatedData = $request->validate([
-//            'matricule' => 'required|string',
-//            'password' => 'required|string',
-//        ]);
-//
-//        // Recherche de l'utilisateur par matricule
-//        $user = User::where('matricule', $request->matricule)->first(); // Utilisation de where()
-//
-//        // Vérification de l'existence de l'utilisateur et du mot de passe
-//        if ($user && Hash::check($request->password, $user->password)) {
-//            // Authentifier l'utilisateur
-//// Authentifier l'utilisateur avec ou sans "remember me"
-//            Auth::login($user, $request);
-//            dd( Auth::login($user));
-//
-//            Auth::login($user);
-//            session_start();
-//            $_SESSION['userA'] ='fhjdfhj';
-//            if($user){
-//
-//            }else{
-//                return redirect()->route('reponquition.index')->with('success', 'Connexion réussie')->with('user', Auth::user());
-//
-//            }
-//
-//            // Rediriger vers la page d'accueil ou dashboard
-//        } else {
-//            // Retourner une erreur si les informations sont incorrectes
-//            return back()->withErrors(['matricule' => 'Matricule ou mot de passe incorrect.']);
-//        }
-//    }
 
     /**
      * Déconnecte l'utilisateur.

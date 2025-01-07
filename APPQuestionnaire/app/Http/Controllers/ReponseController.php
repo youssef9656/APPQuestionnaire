@@ -18,10 +18,12 @@ class ReponseController extends Controller
         session_start();
     }
 
+
     public function index()
     {
 
-        $user   =   $_SESSION['userA'] ;
+
+        $user   =   $_SESSION['userA'] ?? null;
 
         // Vérifiez si l'utilisateur est connecté
         if ($user) {

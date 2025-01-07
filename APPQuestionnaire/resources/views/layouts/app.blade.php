@@ -16,8 +16,7 @@
             object-fit: cover;
         }
     </style>
-    <livewire:styles />
-    <livewire:scripts />
+
 </head>
 <body>
 
@@ -37,7 +36,6 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <?php
-                    session_start();
                     if (isset($_SESSION['userA'])) {
                         echo '<li class="nav-item">
             <span class="nav-link">

@@ -21,10 +21,37 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Routes pour l'authentification
-Route::get('login', [UserController::class, 'showLoginForm'])->name('login');
-Route::post('login', [UserController::class, 'login']);
-Route::post('logout', [UserController::class, 'logout'])->name('logout');
+//session_start();
+//$user =$_SESSION['userA'];
+//if (!$user) {
+//    // Routes pour l'authentification
+//    Route::get('login', [UserController::class, 'showLoginForm'])->name('login');
+//    Route::post('login', [UserController::class, 'login']);
+//    Route::post('logout', [UserController::class, 'logout'])->name('logout');
+//}elseif ($user) {
+//    if($user['role'] == 'admin'){
+//
+//    }elseif ($user['role'] == 'user'){
+//
+//        Route::get('/reponquition', [ReponseController::class, 'index'])->name('reponquition.index');
+//        Route::get('reponse/{id}', [ReponseController::class, 'showReponse'])->name('questionsrepose');
+//// Route pour soumettre les réponses à un test
+//        Route::post('/reponse/{id_test}/reponses', [ReponseController::class, 'store'])->name('reponses.store');
+//        Route::get('/test/{id_test}/completion', [ReponseController::class, 'testCompletion'])->name('test.completion');
+//
+//    }
+//
+//}else{
+//    Route::get('404', function () {
+//        return view('');
+//    });
+//}
+
+
+    Route::get('login', [UserController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [UserController::class, 'login']);
+    Route::post('logout', [UserController::class, 'logout'])->name('logout');
+
 
 // Routes pour l'enregistrement des utilisateurs
 Route::get('register', [UserController::class, 'create'])->name('register');  // Afficher le formulaire

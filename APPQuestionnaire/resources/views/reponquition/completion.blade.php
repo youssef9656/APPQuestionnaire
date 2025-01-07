@@ -13,10 +13,10 @@
                     <h2 class="mt-4">Votre score : <span class="text-primary">{{ $score }}</span>/100</h2>
                 @endif
 
-{{--                <div class="mt-4">--}}
-{{--                    <a href="{{ route('tests.index') }}" class="btn btn-primary">Retour à la liste des tests</a>--}}
+                <div class="mt-4">
+                    <a href="{{ route('reponquition.index') }}" class="btn btn-primary">Retour à la liste des tests</a>
 {{--                    <a href="{{ route('home') }}" class="btn btn-secondary">Accueil</a>--}}
-{{--                </div>--}}
+                </div>
             </div>
         </div>
     </div>
