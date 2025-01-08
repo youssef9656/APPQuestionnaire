@@ -18,6 +18,7 @@ class QuestionController extends Controller
 //        $questions = $test->questions()->with('subQuestions')->get();
         $questions = $test->questions()
             ->with(['subQuestions', 'options.associatedQuestion'])
+            ->orderBy('ordre_question', 'asc')
             ->get();
 
         return view('questions.index', compact('test', 'questions'));
@@ -169,4 +170,25 @@ class QuestionController extends Controller
         return redirect()->route('questions.index', $test->id_test)
             ->with('success', 'Question supprimée avec succès.');
     }
+
+    public function updateOrder(Request $request, $id)
+    {
+        // Vérifiez si les données sont reçues
+        logger()->info('Données reçues pour updateOrder', ['data' => $request->all()]);
+
+        $orderedIds = $request->input('orderedIds');
+        if (!$orderedIds || !is_array($orderedIds)) {
+            return response()->json(['success' => false, 'message' => 'Données invalides.'], 400);
+        }
+
+        // Mise à jour des questions
+        foreach ($orderedIds as $order) {
+            Question::where('id_question', $order['id'])
+                ->update(['ordre_question' => $order['order']]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Ordre mis à jour avec succès.']);
+    }
+
+
 }
