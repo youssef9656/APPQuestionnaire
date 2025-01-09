@@ -78,6 +78,8 @@ Route::get('/{test}/questions/{question}/edit', [QuestionController::class, 'edi
 Route::put('/{test}/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
 Route::delete('/{test}/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
 
+
+
 use App\Http\Controllers\QuestionCourteController;
 Route::resource('questions/{question}/courtes', QuestionCourteController::class);
 Route::resource('tests/{test}/questions', QuestionController::class);
@@ -118,6 +120,13 @@ Route::prefix('questions/{question}/options')->group(function () {
 });
 
 
+Route::post('/questions/update-order/{id}', [QuestionController::class, 'updateOrder'])->name('questions.updateOrder');
+
+
+//use App\Http\Livewire\UsersTable;
+
+//Route::get('/users', UsersTable::class)->name('users.index');
+Route::put('tests/{test}/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
 // web.php
 // routes/web.php
 Route::get('/usersRepo', [ReponseController::class, 'indexRepo'])->name('usersRepo');
