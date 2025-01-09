@@ -121,6 +121,9 @@
       <excludeFolder url="file://$MODULE_DIR$/APPQuestionnaire/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/APPQuestionnaire/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/APPQuestionnaire/vendor/livewire/livewire" />
+      <excludeFolder url="file://$MODULE_DIR$/APPQuestionnaire/vendor/blade-ui-kit/blade-heroicons" />
+      <excludeFolder url="file://$MODULE_DIR$/APPQuestionnaire/vendor/blade-ui-kit/blade-icons" />
+      <excludeFolder url="file://$MODULE_DIR$/APPQuestionnaire/vendor/rappasoft/laravel-livewire-tables" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -118,8 +118,6 @@ Route::prefix('questions/{question}/options')->group(function () {
 });
 
 
-
-
-//use App\Http\Livewire\UsersTable;
-
-//Route::get('/users', UsersTable::class)->name('users.index');
+// web.php
+// routes/web.php
+Route::get('/usersRepo', [ReponseController::class, 'indexRepo'])->name('usersRepo');

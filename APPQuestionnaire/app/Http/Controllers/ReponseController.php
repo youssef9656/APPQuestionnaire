@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Question;
 use App\Models\Reponse;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Test;
 use Illuminate\Support\Facades\DB;
@@ -161,105 +162,16 @@ class ReponseController extends Controller
         $reponseModel->save();
     }
 
-//    public function store(Request $request, $id_test)
-//    {
-//        // Valider les données entrantes
-//        $validated = $request->validate([
-//            'reponses' => 'required|array',
-//        ]);
-//
-//        // Récupérer l'utilisateur actuel (assurez-vous que l'utilisateur est authentifié)
-//        session_start();
-//
-//        $id_user   =   $_SESSION['userA']['id_user'] ;
-//        // Boucle pour traiter chaque question et ses réponses
-//        foreach ($validated['reponses'] as $question_id => $reponseData) {
-//
-//            foreach ($reponseData as $key => $value) {
-//                // Vérifie si c'est une sous-question (clé commence par "subQuestions")
-//                if (strpos($key, 'subQuestions') === 0 && is_array($value)) {
-//                    foreach ($value as $subQuestionId => $subAnswer) {
-//                        $reponse = new Reponse();
-//                        $reponse->id_user = $id_user;
-//                        $reponse->id_test = $id_test;
-//                        $reponse->id_question = $question_id; // ID de la question parent
-//                        $reponse->type_reponse = 'subQuestion';
-//                        $reponse->reponse = $subAnswer; // Réponse à la sous-question
-//                        $reponse->save();
-//                    }
-//                }
-//            }
-//
-//
-//
-//            // 1. Si la question est une sous-question (type text)
-//            if (isset($reponseData['subQuestion131'])) {
-//                foreach ($reponseData as $key => $value) {
-//                    // Vérifie si c'est une sous-question (clé commence par "subQuestions")
-//                    if (strpos($key, 'subQuestions') === 0 && is_array($value)) {
-//                        foreach ($value as $subQuestionId => $subAnswer) {
-//                            $reponse = new Reponse();
-//                            $reponse->id_user = $id_user;
-//                            $reponse->id_test = $id_test;
-//                            $reponse->id_question = $question_id; // ID de la question parent
-//                            $reponse->type_reponse = 'subQuestion';
-//                            $reponse->reponse = $subAnswer; // Réponse à la sous-question
-//                            $reponse->save();
-//                        }
-//                    }
-//                }
-//
-//            }
-//
-//
-//            // 2. Si la question contient des réponses multiples (checkboxes ou autres)
-//            elseif (isset($reponseData['multiple-1']) || isset($reponseData['multiple-2'])) {
-//                // Parcourir les clés pour traiter les réponses multiples
-//                foreach ($reponseData as $key => $value) {
-//                    if (strpos($key, 'multiple-') === 0) { // Vérifie que la clé commence par "multiple-"
-//                        // Enregistrer chaque réponse multiple
-//                        $reponse = new Reponse();
-//                        $reponse->id_user = $id_user;
-//                        $reponse->id_test = $id_test;
-//                        $reponse->id_question = $question_id;
-//                        $reponse->type_reponse = 'multiple';
-//                        $reponse->reponse = $value; // Valeur de la réponse multiple
-//                        $reponse->save(); // Sauvegarder la réponse
-//                    }
-//                }
-//            }
-//
-//            // 3. Si la question est une option (radio button) avec une réponse obligatoire
-//            elseif (isset($reponseData['id_option_reponse'])) {
-//                $reponse = new Reponse();
-//                $reponse->id_user = $id_user;
-//                $reponse->id_test = $id_test;
-//                $reponse->id_question = $question_id;
-//                $reponse->type_reponse = 'option';
-//                $reponse->id_option_reponse = $reponseData['id_option_reponse']; // ID de l'option sélectionnée
-//
-//                // Vérifier si une réponse obligatoire est fournie
-//                if (isset($reponseData['mandatoryOption-' . $reponseData['id_option_reponse']])) {
-//                    // Enregistrer la réponse obligatoire si elle existe
-//                    $reponse->reponse = $reponseData['mandatoryOption-' . $reponseData['id_option_reponse']];
-//                } else {
-//                    $reponse->reponse = null; // Sinon, aucune réponse dans le champ
-//                }
-//                $reponse->save();
-//            }
-//        }
-//
-//        // Retourner une réponse JSON avec le succès
-//        return response()->json([
-//            'message' => 'Réponses enregistrées avec succès !',
-//            'data' => $validated['reponses']
-//        ]);
-//    }
 
     public function testCompletion($id_test, $score = null)
     {
         return view('reponquition.completion', ['score' => $score]);
     }
-
+    public function indexRepo()
+    {
+        $users = User::all();
+        $tests = Reponse::select('id_user', 'id_test')->distinct()->get();
+        return view('usersRepo', compact('users', 'tests'));
+    }
 
 }
