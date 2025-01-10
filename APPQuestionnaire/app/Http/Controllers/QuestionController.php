@@ -48,13 +48,31 @@ class QuestionController extends Controller
 
         $ordre_question = $test->questions()->max('ordre_question') + 1;
 
+        $tquestion = $request->input('option_type');
+
+        if ($tquestion === 'multiple') {
+
+            $type_question = 'multiple';
+
+        }elseif ($tquestion === 'unique') {
+
+            $type_question = 'options_choix';
+
+        }elseif ($request->input('type_question') === 'short_question') {
+
+            $type_question = 'short_question';
+
+        }
+
+
         // Création de la question principale
         $question = $test->questions()->create([
             'id_test' => $test->id_test,
             'text_question' => $request->input('text_question'),
-            'type_question' => $request->input('type_question'),
+            'type_question' => $type_question,
             'ordre_question' => $ordre_question,
         ]);
+
 
         // Si la question est de type 'short_question', ajouter les sous-questions
         if ($request->input('type_question') === 'short_question') {
@@ -129,25 +147,92 @@ class QuestionController extends Controller
     {
         // Validation des données
         $request->validate([
-            'text_question' => 'required|string|max:255', // Correctif du nom de la colonne
-            'type_question' => 'required|in:text,multiple_choice,options_choix,short_question', // Types autorisés
+            'text_question' => 'required|string|max:255',
+            'type_question' => 'required',
             'sub_questions' => 'nullable|array',
-            'sub_questions.*.text' => 'required|string|max:255',
-            'sub_questions.*.type' => 'required|in:text,number',
+            'sub_questions.*.text' => 'nullable|string|max:255',
+            'sub_questions.*.type' => 'required',
+            'choices' => 'nullable|array',
         ]);
+
+        // Supprimer les données spécifiques au type précédent
+        if ($question->type_question === 'short_question') {
+            $question->subQuestions()->delete();
+        } elseif ($question->type_question === 'options_choix') {
+            $question->options()->delete();
+        } elseif ($question->type_question === 'multiple') {
+            $question->multiple()->delete();
+        }
 
         // Mise à jour de la question principale
+
+        if ($request->input('option_type') === 'multiple') {
+
+            $type_question = 'multiple';
+        }
+        if ($request->input('option_type') === 'unique') {
+
+            $type_question = 'options_choix';
+        }
+        if ($request->input('type_question') === 'short_question') {
+
+            $type_question = 'short_question';
+        }
+
+
+
         $question->update([
             'text_question' => $request->input('text_question'),
-            'type_question' => $request->input('type_question'),
+            'type_question' => $type_question,
         ]);
 
-        // Si la question est de type 'short_question', mettre à jour les sous-questions
-        if ($request->input('type_question') == 'short_question') {
+        // Ajout des sous-questions si la question est de type 'short_question'
+        if ($request->input('type_question') === 'short_question') {
+            $ordre_sub_question = 1;
             foreach ($request->input('sub_questions') as $subQuestionData) {
-                QuestionCourte::updateOrCreate(
-                    ['id_question' => $question->id_question, 'text_question' => $subQuestionData['text']],
-                    ['type_question' => $subQuestionData['type']]
+                QuestionCourte::create([
+                    'id_question' => $question->id_question,
+                    'text_question' => $subQuestionData['text'],
+                    'type_question' => $subQuestionData['type'],
+                    'ordre_question' => $ordre_sub_question++,
+                ]);
+            }
+        }
+
+        // Ajout des options si la question est de type 'options_choix'
+        if ($request->input('type_question') === 'options_choix') {
+            $ordre_option = 1;
+            if ($request->input('option_type') === 'unique') {
+                foreach ($request->input('choices') as $choice) {
+                    Option::create([
+                        'id_question' => $question->id_question,
+                        'text_option' => $choice['label'],
+                        'text_associé' => $choice['question'] ?? null,
+                        'ordre_question' => $ordre_option++,
+                    ]);
+                }
+            }
+
+            if ($request->input('option_type') === 'multiple') {
+                $ordre_option = 1;
+                foreach ($request->input('choicesMultiple') as $choice) {
+                    Multiple::create([
+                        'id_question' => $question->id_question,
+                        'text_question' => $choice['label'],
+                        'nombre_de' => $choice['de'],
+                        'nombre_a' => $choice['a'],
+                        'ordre_multip' => $ordre_option++,
+                    ]);
+                }
+        }
+        }
+
+        // Mise à jour des champs obligatoires
+        if ($request->has('mandatory')) {
+            foreach ($request->input('mandatory') as $mandatoryField) {
+                OptionChoixObligatoire::updateOrCreate(
+                    ['id_question' => $question->id_question, 'question_text' => $mandatoryField['text']],
+                    ['question_type' => 'text']
                 );
             }
         }

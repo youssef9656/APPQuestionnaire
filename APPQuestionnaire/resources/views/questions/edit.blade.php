@@ -13,8 +13,7 @@
                 <label for="type_question" class="form-label">Type de la question :</label>
                 <select name="type_question" id="type_question" class="form-select" required onchange="handleQuestionTypeChange()">
                     <option>Sélectionnez le type de la question</option>
-                    <option value="options_choix" {{ old('type_question', $question->type_question) == 'options_choix' ? 'selected' : '' }}>Options</option>
-                    <option value="short_question" {{ old('type_question', $question->type_question) == 'short_question' ? 'selected' : '' }}>Question courte</option>
+                    <option value="options_choix" {{ old('type_question', $question->type_question) == 'options_choix' || old('type_question', $question->type_question) == 'multiple' ? 'selected' : '' }}>Options</option>                    <option value="short_question" {{ old('type_question', $question->type_question) == 'short_question' ? 'selected' : '' }}>Question courte</option>
                 </select>
             </div>
 
@@ -28,13 +27,13 @@
                                     <div class="card-body">
                                         <div class="mb-3">
                                             <label for="sub_questions[{{ $index }}][text]" class="form-label">Texte de la sous-question :</label>
-                                            <input type="text" name="sub_questions[{{ $index }}][text]" id="sub_questions[{{ $index }}][text]" class="form-control" value="{{ old('sub_questions.'.$index.'.text', $subQuestion->text) }}" required>
+                                            <input type="text" name="sub_questions[{{ $index }}][text]" id="sub_questions[{{ $index }}][text_question]" class="form-control" value="{{ old('sub_questions.'.$index.'.text', $subQuestion->text_question) }}" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="sub_questions[{{ $index }}][type]" class="form-label">Type de l'entrée :</label>
                                             <select name="sub_questions[{{ $index }}][type]" class="form-select" required>
-                                                <option value="text" {{ $subQuestion->type == 'text' ? 'selected' : '' }}>Texte</option>
-                                                <option value="number" {{ $subQuestion->type == 'number' ? 'selected' : '' }}>Numérique</option>
+                                                <option value="text" {{ $subQuestion->type_question == 'text' ? 'selected' : '' }}>Texte</option>
+                                                <option value="number" {{ $subQuestion->type_question == 'number' ? 'selected' : '' }}>Numérique</option>
                                             </select>
                                         </div>
                                         <button type="button" class="btn btn-danger btn-sm" onclick="removeShortQuestion(this)">Supprimer</button>
@@ -42,34 +41,33 @@
                                 </div>
                             </div>
                         @endforeach
-
                     @endif
                 </div>
                 <button type="button" class="btn btn-outline-primary mt-3" onclick="addShortQuestion()">Ajouter une sous-question</button>
             </div>
 
-            <div id="options_container" class="mt-4" style="display: {{ $question->type_question == 'options_choix' ? 'block' : 'none' }}">
+            <div id="options_container" class="mt-4" style="display: {{ $question->type_question === 'options_choix' ? 'block' : 'none' }}">
                 <h5 class="mb-3">Options :</h5>
                 <div class="mb-3">
                     <label for="option_type" class="form-label">Type d'options :</label>
                     <select id="option_type" name="option_type" class="form-select" onchange="toggleChoicesForm()">
-                        <option value="unique" {{ $question->option_type == 'unique' ? 'selected' : '' }}>Choix unique</option>
-                        <option value="multiple" {{ $question->option_type == 'multiple' ? 'selected' : '' }}>Choix multiple</option>
+                        <option value="unique" {{ $question->type_question == 'unique' ? 'selected' : '' }}>Choix unique</option>
+                        <option value="multiple" {{ $question->type_question == 'multiple' ? 'selected' : '' }}>Choix multiple</option>
                     </select>
                 </div>
                 <div id="choices_container" class="row g-3">
-                    @if(!empty($question->choices))
-                        @foreach($question->choices as $index => $choice)
+                    @if(!empty($question->options))
+                        @foreach($question->options as $index => $option)
                             <div class="col-md-6">
                                 <div class="card shadow-sm">
                                     <div class="card-body">
                                         <div class="mb-3">
                                             <label for="choices[{{ $index }}][label]" class="form-label">Libellé du choix :</label>
-                                            <input type="text" name="choices[{{ $index }}][label]" id="choices[{{ $index }}][label]" class="form-control" value="{{ old('choices.'.$index.'.label', $choice->label) }}" required>
+                                            <input type="text" name="choices[{{ $index }}][label]" id="choices[{{ $index }}][label]" class="form-control" value="{{ old('choices.'.$index.'.label', $option->text_option) }}" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="choices[{{ $index }}][question]" class="form-label">Question associée (facultatif) :</label>
-                                            <input type="text" name="choices[{{ $index }}][question]" id="choices[{{ $index }}][question]" class="form-control" value="{{ old('choices.'.$index.'.question', $choice->question) }}">
+                                            <input type="text" name="choices[{{ $index }}][question]" id="choices[{{ $index }}][question]" class="form-control" value="{{ old('choices.'.$index.'.question', $option->text_associé) }}">
                                         </div>
                                         <button type="button" class="btn btn-danger btn-sm" onclick="removeChoice(this)">Supprimer</button>
                                     </div>
@@ -78,52 +76,34 @@
                         @endforeach
                     @endif
                 </div>
-                <button type="button" class="btn btn-outline-primary mt-3" onclick="addChoice()" id="add_choice_button" style="display: {{ $question->option_type == 'unique' ? 'inline-block' : 'none' }}">Ajouter une option</button>
-                <div id="choices_multiple_container" class="row g-3" style="margin-top: 0; display: {{ $question->option_type == 'multiple' ? 'flex' : 'none' }}">
-                    @if(!empty($question->choicesMultiple))
-                        @foreach($question->choicesMultiple as $index => $choiceMultiple)
+                <button type="button" class="btn btn-outline-primary mt-3" onclick="addChoice()" id="add_choice_button" style="display: {{ $question->type_question == 'unique' ? 'inline-block' : 'none' }}">Ajouter une option</button>
+                <div id="choices_multiple_container" class="row g-3" style="margin-top: 0; display: {{ $question->type_question === 'multiple' ? 'flex' : 'none' }}">
+                    @if(!empty($question->multiple))
+                        @foreach($question->multiple as $index => $choiceMultiple)
                             <div class="col-md-6">
                                 <div class="card shadow-sm">
                                     <div class="card-body">
                                         <div class="mb-3">
                                             <label for="choicesMultiple[{{ $index }}][label]" class="form-label">Libellé du choix :</label>
-                                            <input type="text" name="choicesMultiple[{{ $index }}][label]" id="choicesMultiple[{{ $index }}][label]" class="form-control" value="{{ old('choicesMultiple.'.$index.'.label', $choiceMultiple->label) }}" required>
+                                            <input type="text" name="choicesMultiple[{{ $index }}][label]" id="choicesMultiple[{{ $index }}][label]" class="form-control" value="{{ old('choicesMultiple.'.$index.'.text_question', $choiceMultiple->text_question) }}" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="choicesMultiple[{{ $index }}][de]" class="form-label">De : </label>
-                                            <input type="number" name="choicesMultiple[{{ $index }}][de]" id="choicesMultiple[{{ $index }}][de]" class="form-control" value="{{ old('choicesMultiple.'.$index.'.de', $choiceMultiple->de) }}" required>
+                                            <label for="choicesMultiple[{{ $index }}][de]" class="form-label">De :</label>
+                                            <input type="number" name="choicesMultiple[{{ $index }}][de]" id="choicesMultiple[{{ $index }}][de]" class="form-control" value="{{ old('choicesMultiple.'.$index.'.nombre_de', $choiceMultiple->nombre_de) }}" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="choicesMultiple[{{ $index }}][a]" class="form-label">À :</label>
-                                            <input type="number" name="choicesMultiple[{{ $index }}][a]" id="choicesMultiple[{{ $index }}][a]" class="form-control" value="{{ old('choicesMultiple.'.$index.'.a', $choiceMultiple->a) }}" required>
+                                            <input type="number" name="choicesMultiple[{{ $index }}][a]" id="choicesMultiple[{{ $index }}][a]" class="form-control" value="{{ old('choicesMultiple.'.$index.'.nombre_a', $choiceMultiple->nombre_a) }}" required>
                                         </div>
                                         <button type="button" class="btn btn-danger btn-sm" onclick="removeMultipleChoice(this)">Supprimer</button>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
+{{--                    @dd($question->multiple)--}}
                     @endif
                 </div>
-                <button type="button" class="btn btn-outline-primary mt-3" onclick="addMultipleChoice()" id="add_multiple_choice_button" style="display: {{ $question->option_type == 'multiple' ? 'inline-block' : 'none' }}">Ajouter une option</button>
-                <button type="button" class="btn btn-outline-warning mt-3 ms-2" onclick="addMandatoryField()">Ajouter un champ obligatoire</button>
-                <div id="mandatory_fields_container" class="row g-3 mt-3">
-                    @if(!empty($question->mandatoryFields))
-                        @foreach($question->mandatoryFields as $index => $mandatoryField)
-                            <div class="col-md-6">
-                                <div class="card shadow-sm border-warning">
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <label for="mandatory[{{ $index }}][text]" class="form-label">Texte du champ obligatoire :</label>
-                                            <input type="text" name="mandatory[{{ $index }}][text]" id="mandatory[{{ $index }}][text]" class="form-control" value="{{ old('mandatory.'.$index.'.text', $mandatoryField->text) }}" required>
-                                        </div>
-                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeMandatoryField(this)">Supprimer</button>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-
-                    @endif
-                </div>
+                <button type="button" class="btn btn-outline-primary mt-3" onclick="addMultipleChoice()" id="add_multiple_choice_button" style="display: {{ $question->type_question == 'multiple' ? 'inline-block' : 'none' }}">Ajouter une option</button>
             </div>
 
             <div class="mt-4">
@@ -134,12 +114,26 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+
+            form.addEventListener("submit", function (event) {
+                const invalidFields = form.querySelectorAll(":invalid");
+
+                invalidFields.forEach(field => {
+                    if (field.hasAttribute("required") && field.offsetParent === null) {
+                        field.closest(".hidden-container").style.display = "block";
+                    }
+                });
+            });
+        });
+
         function ValidateQuestion() {
             let type = document.getElementById("type_question").value;
-            let sub_question_inputs = document.querySelectorAll('#short_questions input[name$="[text]"]');
-            let choices = document.querySelectorAll('#choices_container input[name$="[label]"]');
-            let choicesMultiple = document.querySelectorAll('#choices_multiple_container input[name$="[label]"]');
-            let mandatoryFields = document.querySelectorAll('#mandatory_fields_container input[name$="[text]"]');
+            let sub_question_inputs = document.querySelectorAll('#short_questions input[name^="sub_questions"][name$="[text]"]');
+            let choices = document.querySelectorAll('#choices_container input[name^="choices"][name$="[label]"]');
+            let choicesMultiple = document.querySelectorAll('#choices_multiple_container input[name^="choicesMultiple"][name$="[label]"]');
+            let mandatoryFields = document.querySelectorAll('#mandatory_fields_container input[name^="mandatory"][name$="[text]"]');
 
             switch (type) {
                 case "short_question":
@@ -164,9 +158,17 @@
                         }
                     } else {
                         for (let choice of choicesMultiple) {
-                            if (choice.value.trim() === "") {
-                                alert("Veuillez remplir tous les champs des options multiples.");
-                                return false;
+                            for (let choice of choicesMultiple) {
+                                if (choice.value.trim() === "") {
+                                    alert("Veuillez remplir tous les champs des options multiples.");
+                                    return false;
+                                }
+                                let nombreDe = parseInt(choice.closest('.card-body').querySelector('input[name$="[de]"]').value, 5);
+                                let nombreA = parseInt(choice.closest('.card-body').querySelector('input[name$="[a]"]').value, 5);
+                                if (isNaN(nombreDe) || isNaN(nombreA) || nombreDe < 0 || nombreA < 0 || nombreDe > 9999 || nombreA > 9999) {
+                                    alert("Les valeurs de 'De' et 'À' doivent être des nombres entre 0 et 5000.");
+                                    return false;
+                                }
                             }
                         }
                     }
@@ -201,24 +203,23 @@
             var newShortQuestion = document.createElement("div");
             newShortQuestion.classList.add("col-md-6");
             newShortQuestion.innerHTML = `
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="mb-3">
-                <label for="sub_questions[${index}][text]" class="form-label">Texte de la sous-question :</label>
-                <input type="text" name="sub_questions[${index}][text]" class="form-control" required>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="sub_questions[${index}][text]" class="form-label">Texte de la sous-question :</label>
+                    <input type="text" name="sub_questions[${index}][text]" id="sub_questions[${index}][text]" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="sub_questions[${index}][type]" class="form-label">Type de l'entrée :</label>
+                    <select name="sub_questions[${index}][type]" id="sub_questions[${index}][type]" class="form-select" required>
+                        <option value="text">Texte</option>
+                        <option value="number">Numérique</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeShortQuestion(this)">Supprimer</button>
             </div>
-            <div class="mb-3">
-                <label for="sub_questions[${index}][type]" class="form-label">Type de l'entrée :</label>
-                <select name="sub_questions[${index}][type]" class="form-select" required>
-                    <option value="text">Texte</option>
-                    <option value="number">Numérique</option>
-                </select>
-            </div>
-            <button type="button" class="btn btn-danger btn-sm" onclick="removeShortQuestion(this)">Supprimer</button>
         </div>
-    </div>
-`;
-
+    `;
             shortQuestionsContainer.appendChild(newShortQuestion);
         }
 
@@ -232,21 +233,20 @@
             var newChoice = document.createElement("div");
             newChoice.classList.add("col-md-6");
             newChoice.innerHTML = `
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="mb-3">
-                <label for="choices[${index}][label]" class="form-label">Libellé du choix :</label>
-                <input type="text" name="choices[${index}][label]" class="form-control" required>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="choices[${index}][label]" class="form-label">Libellé du choix :</label>
+                    <input type="text" name="choices[${index}][label]" id="choices[${index}][label]" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="choices[${index}][question]" class="form-label">Question associée (facultatif) :</label>
+                    <input type="text" name="choices[${index}][question]" id="choices[${index}][question]" class="form-control">
+                </div>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeChoice(this)">Supprimer</button>
             </div>
-            <div class="mb-3">
-                <label for="choices[${index}][question]" class="form-label">Question associée (facultatif) :</label>
-                <input type="text" name="choices[${index}][question]" class="form-control">
-            </div>
-            <button type="button" class="btn btn-danger btn-sm" onclick="removeChoice(this)">Supprimer</button>
         </div>
-    </div>
-`;
-
+    `;
             choicesContainer.appendChild(newChoice);
         }
 
@@ -260,17 +260,16 @@
             var newMandatoryField = document.createElement("div");
             newMandatoryField.classList.add("col-md-6");
             newMandatoryField.innerHTML = `
-    <div class="card shadow-sm border-warning">
-        <div class="card-body">
-            <div class="mb-3">
-                <label for="mandatory[${index}][text]" class="form-label">Texte du champ obligatoire :</label>
-                <input type="text" name="mandatory[${index}][text]" class="form-control" required>
+        <div class="card shadow-sm border-warning">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="mandatory[${index}][text]" class="form-label">Texte du champ obligatoire :</label>
+                    <input type="text" name="mandatory[${index}][text]" id="mandatory[${index}][text]" class="form-control" required>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeMandatoryField(this)">Supprimer</button>
             </div>
-            <button type="button" class="btn btn-danger btn-sm" onclick="removeMandatoryField(this)">Supprimer</button>
         </div>
-    </div>
-`;
-
+    `;
             mandatoryFieldsContainer.appendChild(newMandatoryField);
         }
 
@@ -284,25 +283,24 @@
             var newChoice = document.createElement("div");
             newChoice.classList.add("col-md-6");
             newChoice.innerHTML = `
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="mb-3">
-                <label for="choicesMultiple[${index}][label]" class="form-label">Libellé du choix :</label>
-                <input type="text" name="choicesMultiple[${index}][label]" class="form-control" required>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="choicesMultiple[${index}][label]" class="form-label">Libellé du choix :</label>
+                    <input type="text" name="choicesMultiple[${index}][label]" id="choicesMultiple[${index}][label]" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="choicesMultiple[${index}][de]" class="form-label">De :</label>
+                    <input type="number" name="choicesMultiple[${index}][de]" id="choicesMultiple[${index}][de]" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="choicesMultiple[${index}][a]" class="form-label">À :</label>
+                    <input type="number" name="choicesMultiple[${index}][a]" id="choicesMultiple[${index}][a]" class="form-control" required>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeMultipleChoice(this)">Supprimer</button>
             </div>
-            <div class="mb-3">
-                <label for="choicesMultiple[${index}][de]" class="form-label">De :</label>
-                <input type="number" name="choicesMultiple[${index}][de]" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="choicesMultiple[${index}][a]" class="form-label">À :</label>
-                <input type="number" name="choicesMultiple[${index}][a]" class="form-control" required>
-            </div>
-            <button type="button" class="btn btn-danger btn-sm" onclick="removeMultipleChoice(this)">Supprimer</button>
         </div>
-    </div>
-`;
-
+    `;
             choicesMultipleContainer.appendChild(newChoice);
         }
 
@@ -330,6 +328,6 @@
             }
         }
 
-        handleQuestionTypeChange(); // Call on page load to set initial visibility
+        handleQuestionTypeChange();
     </script>
 @endsection

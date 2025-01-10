@@ -40,6 +40,21 @@
                                 </ul>
                             @endif
 
+                            @if ($question->type_question === 'multiple' && $question->multiple && $question->multiple->count() > 0)
+                                <h5 class="card-title mt-3">Options multiples :</h5>
+                                @foreach ($question->multiple as $multiple)
+                                    <div class="card mb-2">
+                                        <div class="card-header bg-info text-white">
+                                            <strong>Libellé :</strong> {{ $multiple->text_question }}
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>De :</strong> {{ $multiple->nombre_de }}</p>
+                                            <p><strong>À :</strong> {{ $multiple->nombre_a }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
                             @if ($question->options && $question->options->count() > 0)
                                 <h5 class="card-title mt-3">Options :</h5>
                                 <ul class="list-group list-group-flush">

@@ -10,7 +10,7 @@ class Question extends Model
     use HasFactory;
 
     protected $primaryKey = 'id_question';
-    protected $fillable = ['id_test', 'text_question', 'type_question', 'ordre_question'];
+    protected $fillable = ['id_question', 'id_test', 'text_question', 'type_question', 'ordre_question'];
     public $timestamps = false;
 
     public function test()
