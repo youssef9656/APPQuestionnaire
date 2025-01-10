@@ -18,24 +18,24 @@
 
 
 
-<script>
-    setInterval(function() {
-        // Make an AJAX call to increment tempsTest in the session
-        fetch('{{ route('updateTempsTest') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ increment: true })
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Updated tempsTest:', data.tempsTest);
-            });
-    }, 1000);  // Every 1 second
+{{--<script>--}}
+{{--    setInterval(function() {--}}
+{{--        // Make an AJAX call to increment tempsTest in the session--}}
+{{--        fetch('{{ route('updateTempsTest') }}', {--}}
+{{--            method: 'POST',--}}
+{{--            headers: {--}}
+{{--                'Content-Type': 'application/json',--}}
+{{--                'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
+{{--            },--}}
+{{--            body: JSON.stringify({ increment: true })--}}
+{{--        })--}}
+{{--            .then(response => response.json())--}}
+{{--            .then(data => {--}}
+{{--                console.log('Updated tempsTest:', data.tempsTest);--}}
+{{--            });--}}
+{{--    }, 1000);  // Every 1 second--}}
 
-</script>
+{{--</script>--}}
 
 <div id="div_circle_temp" >
     <div class="progress-container" >
@@ -45,7 +45,6 @@
     </div>
     <div class="form-container w-100 text-centre" style="display: flex;flex-flow: column; align-items: center;">
         <h1>Questions</h1>
-{{--        {{$Questions}}--}}
 
 
         <form class="form-container1" action="{{ route('reponses.store', $id_test) }}" method="POST">
@@ -109,7 +108,7 @@
                                     name="reponses[{{ $question['id_question'] }}][subQuestions{{ $question['id_question'] }}{{ $index + 1 }}][{{ $subQuestion['id_question'] }}]"
                                     id="subQuestion-{{ $question['id_question'] }}-{{ $subQuestion['id_question'] }}"
                                     placeholder="Entrez votre réponse"
-                                    required>
+                                    required >
                             </div>
                         @endforeach
                     @endif
@@ -128,7 +127,8 @@
                                     id="multiple-{{ $multiple['id_multiple'] }}"
                                     min="{{ $multiple['nombre_de'] }}"
                                     max="{{ $multiple['nombre_a'] }}"
-                                    placeholder="Valeur entre {{ $multiple['nombre_de'] }} et {{ $multiple['nombre_a'] }}">
+                                    placeholder="Valeur entre {{ $multiple['nombre_de'] }} et {{ $multiple['nombre_a'] }}"
+                                    required>
                             </div>
                         @endforeach
                     @endif
@@ -144,7 +144,7 @@
                                     class="form-control mb-2"
                                     type="text"
                                     name="reponses[{{ $OptionChoixObligatoire['id_question'] }}][mandatory-{{ $OptionChoixObligatoire['id_option'] }}]"
-                                    id="OptionChoixObligatoire-{{ $OptionChoixObligatoire['id_option'] }}">
+                                    id="OptionChoixObligatoire-{{ $OptionChoixObligatoire['id_option'] }}" required>
                             </div>
                         @endforeach
                     @endif
@@ -157,103 +157,18 @@
             </button>
         </form>
 
-        {{--        <form class="form-container1" action="{{ route('reponses.store', $id_test) }}" method="POST">--}}
-{{--            @csrf--}}
-{{--            @foreach ($Questions as $question)--}}
-
-{{--                <div class="question" id="question-{{ $question['id_question'] }}">--}}
-{{--                    <h3>Question: {{ $question['text_question'] }}</h3>--}}
-{{--                    @if (count($question['options']) > 0)--}}
-{{--                        @foreach ($question['options'] as $option)--}}
-
-{{--                            <div class="option">--}}
-{{--                                @if (!empty($option['text_option']))--}}
-{{--                                    <div>--}}
-{{--                                        <label>--}}
-{{--                                            <input class="form-check-input me-2" type="radio" name="reponses[{{ $question['id_question'] }}][id_option_reponse]" value="{{ $option['id_option'] }}"--}}
-{{--                                                   onchange="toggleMandatoryOptions('{{ $option['id_option'] }}')" required>--}}
-{{--                                            {{ $option['text_option'] }}--}}
-{{--                                        </label>--}}
-{{--                                    </div>--}}
-{{--                                    @if (!empty($option['text_associé']))--}}
-{{--                                        <div id="mandatory-{{ $option['id_option'] }}" class="mandatory-options" style="display: none;">--}}
-{{--                                            <div class="form-check">--}}
-{{--                                                <input class="form-control mb-2" type="text"--}}
-{{--                                                       name="reponses[{{$option['text_associé'] }}][text_associé-{{ $option['id_option'] }}]"--}}
-{{--                                                       placeholder="Entrez votre réponse" required>--}}
-{{--                                                <label class="form-check-label" for="mandatory-{{ $option['id_option'] }}">--}}
-{{--                                                    {{ $option['question_text'] }}--}}
-{{--                                                </label>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                    @endif--}}
-
-{{--                                @endif--}}
-
-{{--                            </div>--}}
-{{--                        @endforeach--}}
-{{--                    @elseif(count($question['subQuestions']) > 0)--}}
-{{--                        @foreach ($question['subQuestions'] as $index => $subQuestion)--}}
-{{--                            <div class="sub-question">--}}
-{{--                                <label for="subQuestion-{{ $question['id_question'] }}-{{ $subQuestion['id_question'] }}">--}}
-{{--                                    {{ $subQuestion['text_question'] }}--}}
-{{--                                </label>--}}
-{{--                                <input class="form-control mb-2" type="{{ $subQuestion['type_question'] }}"--}}
-{{--                                       name="reponses[{{ $question['id_question'] }}][subQuestions{{ $question['id_question'] }}{{ $index + 1 }}][{{ $subQuestion['id_question'] }}]"--}}
-{{--                                       id="subQuestion-{{ $question['id_question'] }}-{{ $subQuestion['id_question'] }}"--}}
-{{--                                       placeholder="Entrez votre réponse" required>--}}
-{{--                            </div>--}}
-{{--                        @endforeach--}}
-
-{{--                    @elseif(count($question['multiple']) > 0)--}}
-{{--                        @foreach ($question['multiple'] as $multiple)--}}
-{{--                            <div class="multiple-input">--}}
-{{--                                <label for="multiple-{{ $multiple['id_multiple'] }}">{{ $multiple['text_question'] ?? 'Entrer un nombre' }}</label>--}}
-{{--                                <input class="form-control mb-2" type="number"--}}
-{{--                                       name="reponses[{{ $question['id_question'] }}][multiple-{{ $multiple['id_multiple'] }}]"--}}
-{{--                                       id="multiple-{{ $multiple['id_multiple'] }}"--}}
-{{--                                       min="{{ $multiple['nombre_de'] }}"--}}
-{{--                                       max="{{ $multiple['nombre_a'] }}"--}}
-{{--                                       placeholder="Valeur entre {{ $multiple['nombre_de'] }} et {{ $multiple['nombre_a'] }}">--}}
-{{--                            </div>--}}
-{{--                        @endforeach--}}
-{{--                    @endif--}}
-
-{{--              @if(count($question['OptionChoixObligatoire']) > 0)--}}
-{{--                        @foreach ($question['OptionChoixObligatoire'] as $OptionChoixObligatoire)--}}
-{{--                            <div class="multiple-input">--}}
-{{--                                <label for="multiple-{{ $OptionChoixObligatoire['id_question'] }}">{{ $OptionChoixObligatoire['question_text']  }}</label>--}}
-{{--                                <input class="form-control mb-2" type="text"--}}
-{{--                                       name="reponses[{{ $OptionChoixObligatoire['id_question'] }}][multiple-{{ $OptionChoixObligatoire['id_multiple'] }}]"--}}
-{{--                                       id="OptionChoixObligatoire-{{ $OptionChoixObligatoire['id_option'] }}"--}}
-{{--                                     >--}}
-{{--                            </div>--}}
-{{--                        @endforeach--}}
-{{--                    @endif--}}
-
-
-
-
-{{--                </div>--}}
-{{--            @endforeach--}}
-
-{{--            <button type="submit" class="btn-validate">--}}
-{{--                Soumettre les réponses--}}
-{{--            </button>--}}
-{{--        </form>--}}
-
     </div>
 
 
 
     @php
-//        session_start();
-        $user = $_SESSION['userA'];
-        // Réaffecte la session pour conserver les changements
-         $duree_test = null;
-    //     echo $user['tempsTest'] ;
-        $tempsTest  = $user['tempsTest']/60;
-    $tempsTestFormate = number_format($tempsTest, 2, '.', '');
+////        session_start();
+//        $user = $_SESSION['userA'];
+//        // Réaffecte la session pour conserver les changements
+//         $duree_test = null;
+//    //     echo $user['tempsTest'] ;
+//        $tempsTest  = $user['tempsTest']/60;
+//    $tempsTestFormate = number_format($tempsTest, 2, '.', '');
 
     @endphp
 
@@ -263,9 +178,9 @@
     @foreach ($tests as $test)
         @if ($test['id_test'] == $id_test)
             @php
-                $duree_test = $test['duree_test'] -$tempsTestFormate;
+                $duree_test = $test['duree_test'] ;
             @endphp
-            @break
+          @break
         @endif
     @endforeach
     @php
@@ -310,11 +225,28 @@
 
 <script>
     function toggleMandatoryOptions(optionId) {
+        // Cache tous les champs obligatoires
         document.querySelectorAll('.mandatory-options').forEach(div => div.style.display = 'none');
+
+        // Affiche le champ correspondant
         const mandatoryDiv = document.getElementById(`mandatory-${optionId}`);
         if (mandatoryDiv) {
             mandatoryDiv.style.display = 'block';
+
+            // Ajoute l'attribut required au champ visible
+            const input = mandatoryDiv.querySelector('input, select, textarea');
+            if (input) {
+                input.setAttribute('required', 'required');
+            }
         }
+
+        // Supprime l'attribut required des autres champs
+        document.querySelectorAll('.mandatory-options input, .mandatory-options select, .mandatory-options textarea')
+            .forEach(input => {
+                if (!input.closest(`#mandatory-${optionId}`)) {
+                    input.removeAttribute('required');
+                }
+            });
     }
     document.addEventListener("DOMContentLoaded", () => {
         const questions = document.querySelectorAll(".question");
