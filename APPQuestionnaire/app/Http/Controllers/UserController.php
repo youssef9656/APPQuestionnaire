@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Test;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,8 @@ class UserController extends Controller
         $user = $_SESSION['userA'] ?? null;
         if ($user !== null) {
             if($user['role'] === 'admin') {
+                $tests = Test::all();
+                return view('admin.index', compact('tests'));
 
             }elseif ($user['role'] === 'user') {
                 return redirect()->route('reponquition.index')->with('success', 'Connexion réussie')->with('user', Auth::user());

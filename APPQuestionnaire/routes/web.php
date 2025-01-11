@@ -69,6 +69,7 @@ use App\Http\Controllers\TestController;
 
 Route::resource('tests', TestController::class);
 
+
 use App\Http\Controllers\QuestionController;
 
 Route::get('/{test}/questions', [QuestionController::class, 'index'])->name('questions.index');
