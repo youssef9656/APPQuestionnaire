@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container mt-4">
-        <h1>Questions du Test : {{ $test->name }}</h1>
+        <h1>Questions du Test : {{ $test->nom_test }}</h1>
         <a href="{{ route('questions.create', $test->id_test) }}" class="btn btn-primary mb-4">Ajouter une nouvelle Question</a>
 
         <!-- Conteneur des cartes -->
@@ -95,35 +95,47 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const container = document.getElementById("sortable-container");
+            const testId = {{ $test->id_test }};
+            const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+            const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
+
+            if (!csrfToken) {
+                console.error("CSRF token not found.");
+                return;
+            }
 
             Sortable.create(container, {
                 animation: 150,
                 handle: ".card",
                 onEnd: function () {
-                    const order = Array.from(container.children).map((card, index) => ({
+                    const updatedOrder = Array.from(container.children).map((card, index) => ({
                         id: card.dataset.id,
                         order: index + 1 // Ordre basé sur l'index + 1
                     }));
 
                     // Envoi de l'ordre au serveur via AJAX
-                    fetch("{{ route('questions.updateOrder', $test->id_test) }}", {
-                        method: "POST",
+                    fetch(`/api/questions/update-order/${testId}`, {
+                        method: 'POST',
                         headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
                         },
-                        body: JSON.stringify({ order })
-
+                        body: JSON.stringify({ order: updatedOrder }),
                     })
                         .then(response => {
-                            if (response.ok) {
-                                console.log("Ordre des questions mis à jour avec succès.");
-                            } else {
-                                console.error("Erreur lors de la mise à jour de l'ordre des questions.");
+                            if (!response.ok) {
+                                return response.json().then(error => {
+                                    throw new Error(error.message);
+                                });
                             }
+                            return response.json();
                         })
-                        .catch(error => console.error("Erreur réseau :", error));
-
+                        .then(data => {
+                            console.log(data);
+                        })
+                        .catch(error => {
+                            console.error('Error updating order:', error);
+                        });
                 }
             });
         });

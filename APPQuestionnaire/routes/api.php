@@ -15,9 +15,9 @@ use App\Http\Controllers\QuestionController;
 |
 */
 
-Route::post('/questions/update-order/{id}', [QuestionController::class, 'updateOrder']);
 
-
+//Route::post('/questions/update-order/{test}', [QuestionController::class, 'updateOrder'])->name('questions.updateOrder');
+Route::post('/questions/update-order/{test}', [QuestionController::class, 'updateOrder']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

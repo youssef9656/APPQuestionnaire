@@ -256,23 +256,40 @@ class QuestionController extends Controller
             ->with('success', 'Question supprimée avec succès.');
     }
 
-    public function updateOrder(Request $request, $id)
+    public function updateOrder(Request $request, $testId)
     {
-        // Vérifiez si les données sont reçues
-        logger()->info('Données reçues pour updateOrder', ['data' => $request->all()]);
+        try {
+            $order = $request->input('order');
 
-        $orderedIds = $request->input('orderedIds');
-        if (!$orderedIds || !is_array($orderedIds)) {
-            return response()->json(['success' => false, 'message' => 'Données invalides.'], 400);
+            // Log the order data for debugging
+            \Log::info('Order data:', ['order' => $order]);
+
+            // Collect all question IDs and their new order values
+            $questionOrders = [];
+            foreach ($order as $item) {
+                $questionOrders[$item['id']] = $item['order'];
+            }
+
+            // Ensure unique order values by sorting and reassigning
+            $uniqueOrders = array_values(array_unique($questionOrders));
+            sort($uniqueOrders);
+
+            // Update questions with unique order values
+            foreach ($order as $index => $item) {
+                $question = Question::find($item['id']);
+                if ($question) {
+                    $question->ordre_question = $uniqueOrders[$index];
+                    $question->save();
+                }
+            }
+
+            return response()->json(['status' => 'success', 'message' => 'Ordre des questions mis à jour avec succès.']);
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Error updating order:', ['error' => $e->getMessage()]);
+
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
-
-        // Mise à jour des questions
-        foreach ($orderedIds as $order) {
-            Question::where('id_question', $order['id'])
-                ->update(['ordre_question' => $order['order']]);
-        }
-
-        return response()->json(['success' => true, 'message' => 'Ordre mis à jour avec succès.']);
     }
 
 

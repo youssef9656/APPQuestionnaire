@@ -120,7 +120,7 @@ Route::prefix('questions/{question}/options')->group(function () {
 });
 
 
-Route::post('/questions/update-order/{id}', [QuestionController::class, 'updateOrder'])->name('questions.updateOrder');
+//Route::post('/questions/update-order/{id}', [QuestionController::class, 'updateOrder'])->name('questions.updateOrder');
 
 
 //use App\Http\Livewire\UsersTable;
@@ -130,3 +130,4 @@ Route::put('tests/{test}/questions/{question}', [QuestionController::class, 'upd
 // web.php
 // routes/web.php
 Route::get('/usersRepo', [ReponseController::class, 'indexRepo'])->name('usersRepo');
+Route::post('/tests/{test}/questions/update-order', [QuestionController::class, 'updateOrder'])->name('questions.updateOrder');
