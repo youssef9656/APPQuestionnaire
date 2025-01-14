@@ -50,12 +50,15 @@ class ReponseController extends Controller
 
         // Récupérer les questions du test avec leurs relations
         $Questions = Question::with([
-            'options',              // Charger les options liées
-            'subQuestions',       // Charger la question courte liée
-            'multiple',
-            'OptionChoixObligatoire',
-            // Charger le multiple lié
-        ])->where('id_test', $id_test)->get();
+            'options',                  // Charger les options liées
+            'subQuestions',             // Charger la question courte liée
+            'multiple',                 // Charger le multiple lié
+            'OptionChoixObligatoire'    // Charger l'option choix obligatoire
+        ])
+            ->where('id_test', $id_test)    // Filtrer par id_test
+            ->orderBy('ordre_question')     // Ajouter un tri sur ordre_question
+            ->get();
+
 
         $tests = Test::where('active', 1)->get();
 
@@ -170,8 +173,9 @@ class ReponseController extends Controller
     public function indexRepo()
     {
         $users = User::all();
-        $tests = Reponse::select('id_user', 'id_test')->distinct()->get();
-        return view('usersRepo', compact('users', 'tests'));
+        $teste = Test::all();
+        $testsre = Reponse::select('id_user', 'id_test')->distinct()->get();
+        return view('usersRepo', compact('users', 'testsre','teste'));
     }
 
 }
