@@ -13,6 +13,8 @@
     animation: fadeIn 1s ease-in-out;
 }
 
+
+
 /* Animation de transition douce */
 @keyframes fadeIn {
     from {
@@ -61,7 +63,7 @@ h1:hover {
     margin-bottom: 30px;
     font-size: 16px;
     font-weight: bold;
-    color: #555;
+    color: #000000;
 }
 
 /* Options obligatoires */
@@ -72,13 +74,14 @@ h1:hover {
 
 /* Conteneur de formulaire */
 .form-container1 {
-    background: #ffffff;
+    background: rgba(7, 187, 28, 0.25);
     border-radius: 20px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
     padding: 30px;
     width: 90%;
     max-width: 600px;
     transition: transform 0.3s ease;
+    font-weight: bold;
 }
 
 .form-container1:hover {
